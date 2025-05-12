@@ -37,7 +37,7 @@ export default async function FriendsPage() {
         },
     })
 
-    const friendsData = friends.map((friendship) => {
+    const friendsData = friends.map((friendship: { userId: string; user: any; friend: any }) => {
         if (friendship.userId === session.user.id) {
             return friendship.friend
         }
