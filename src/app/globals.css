@@ -1,0 +1,256 @@
+@tailwind utilities;
+@tailwind base;
+
+:root {
+    --primary: #9900ff;
+    --primary-dark: #6600cc;
+    --secondary: #ff00ff;
+    --accent: #00ffff;
+    --background: #2a0066;
+    --background-dark: #1a0044;
+    --text: #ffffff;
+    --text-secondary: #ccaaff;
+    --neon-pink: #ff00ff;
+    --neon-blue: #00ffff;
+    --neon-purple: #9900ff;
+    --neon-yellow: #ffff00;
+    --grid-color: rgba(153, 0, 255, 0.2);
+}
+
+@layer base {
+    body {
+        @apply bg-gradient-to-b from-[#2a0066] to-[#1a0044] text-white min-h-screen;
+        background-image: radial-gradient(circle at 10% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 20%), linear-gradient(to bottom, #2a0066, #1a0044);
+        background-attachment: fixed;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: "Orbitron", sans-serif;
+    }
+
+    .retro-grid {
+        background-image: linear-gradient(to right, var(--grid-color) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+        background-size: 40px 40px;
+    }
+
+    .text-glow {
+        text-shadow: 0 0 5px var(--neon-purple), 0 0 10px var(--neon-purple);
+    }
+
+    .text-glow-pink {
+        text-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink);
+    }
+
+    .text-glow-blue {
+        text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+    }
+
+    .box-glow {
+        box-shadow: 0 0 10px var(--neon-purple), 0 0 20px rgba(153, 0, 255, 0.5);
+    }
+
+    .box-glow-pink {
+        box-shadow: 0 0 10px var(--neon-pink), 0 0 20px rgba(255, 0, 255, 0.5);
+    }
+
+    .box-glow-blue {
+        box-shadow: 0 0 10px var(--neon-blue), 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+
+    @keyframes gradientShift {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .gradient-animate {
+        background-size: 200% 200%;
+        animation: gradientShift 15s ease infinite;
+    }
+
+    .scanlines {
+        position: relative;
+    }
+
+    .scanlines::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.05) 51%);
+        background-size: 100% 4px;
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    @keyframes glitch {
+        0% {
+            transform: translate(0);
+        }
+
+        20% {
+            transform: translate(-2px, 2px);
+        }
+
+        40% {
+            transform: translate(-2px, -2px);
+        }
+
+        60% {
+            transform: translate(2px, 2px);
+        }
+
+        80% {
+            transform: translate(2px, -2px);
+        }
+
+        100% {
+            transform: translate(0);
+        }
+    }
+
+    .glitch {
+        position: relative;
+    }
+
+    .glitch:hover::before,
+    .glitch:hover::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .glitch:hover::before {
+        left: 2px;
+        text-shadow: -1px 0 var(--neon-pink);
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch 0.5s linear infinite alternate-reverse;
+    }
+
+    .glitch:hover::after {
+        left: -2px;
+        text-shadow: 1px 0 var(--neon-blue);
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch 0.5s linear 0.1s infinite alternate;
+    }
+
+    /* Neon button */
+    .neon-button {
+        position: relative;
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        color: var(--neon-pink);
+        font-family: "Orbitron", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        text-decoration: none;
+        font-size: 1rem;
+        overflow: hidden;
+        transition: 0.2s;
+        background: rgba(255, 0, 255, 0.1);
+        border-radius: 30px;
+    }
+
+    .neon-button:hover {
+        color: white;
+        background: var(--neon-pink);
+        box-shadow: 0 0 10px var(--neon-pink), 0 0 40px var(--neon-pink), 0 0 80px var(--neon-pink);
+        transition-delay: 0.1s;
+    }
+
+    /* Floating animation */
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    .floating {
+        animation: float 6s ease-in-out infinite;
+    }
+
+    /* Pulse animation */
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .pulse {
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+    /* Rotate animation */
+    @keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .rotate {
+        animation: rotate 20s linear infinite;
+    }
+
+    .rotate-reverse {
+        animation: rotate 25s linear infinite reverse;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(26, 0, 68, 0.5);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(to bottom, var(--neon-purple), var(--neon-pink));
+        border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(to bottom, var(--neon-pink), var(--neon-blue));
+    }
+}
