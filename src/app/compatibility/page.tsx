@@ -62,7 +62,7 @@ export default async function CompatibilityPage() {
     })
 
     const compatibilityScores = otherUsers
-        .map((user) => {
+        .map((user: typeof otherUsers[number]) => {
             const otherChartData = user.musicChart?.chartData as unknown as MusicChartData
 
             let score = 0
