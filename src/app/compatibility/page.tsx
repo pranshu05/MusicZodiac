@@ -86,7 +86,7 @@ export default async function CompatibilityPage() {
                     .map(([position]) => position),
             }
         })
-        .sort((a: { user: any; score: number; matchingSigns: string[] }, b: { user: any; score: number; matchingSigns: string[] }) => b.score - a.score)
+        .sort((a, b) => b.score - a.score)
 
     return (
         <div className="mx-auto px-4 py-8 space-y-8">
@@ -105,7 +105,7 @@ export default async function CompatibilityPage() {
                     </div>
                     {compatibilityScores.length > 0 ? (
                         <div className="space-y-4">
-                            {compatibilityScores.map(({ user, score, matchingSigns }) => (
+                            {compatibilityScores.map(({ user, score, matchingSigns }: {user: typeof otherUsers[number], score: number, matchingSigns: string[]}) => (
                                 <Link key={user.id} href={`/profile/${user.username || user.id}`} className="block">
                                     <div className="flex items-center justify-between p-4 bg-purple-900/30 rounded-lg border border-purple-500/20 hover:border-purple-500/40 transition-all">
                                         <div className="flex items-center gap-4">
