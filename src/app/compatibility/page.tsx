@@ -86,7 +86,7 @@ export default async function CompatibilityPage() {
                     .map(([position]) => position),
             }
         })
-        .sort((a, b) => b.score - a.score)
+        .sort((a: { user: any; score: number; matchingSigns: string[] }, b: { user: any; score: number; matchingSigns: string[] }) => b.score - a.score)
 
     return (
         <div className="mx-auto px-4 py-8 space-y-8">
