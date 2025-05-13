@@ -50,6 +50,36 @@ export function StarChart({ chartData, className }: StarChartProps) {
                 y: centerY - radius * 0.5,
                 radius: radius * 0.1,
             },
+            mercury: {
+                x: centerX + radius * 0.5,
+                y: centerY - radius * 0.5,
+                radius: radius * 0.1,
+            },
+            jupiter: {
+                x: centerX + radius * 0.5,
+                y: centerY + radius * 0.5,
+                radius: radius * 0.1,
+            },
+            saturn: {
+                x: centerX - radius * 0.7,
+                y: centerY - radius * 0.7,
+                radius: radius * 0.1,
+            },
+            neptune: {
+                x: centerX - radius * 0.7,
+                y: centerY + radius * 0.7,
+                radius: radius * 0.1,
+            },
+            pluto: {
+                x: centerX + radius * 0.7,
+                y: centerY - radius * 0.7,
+                radius: radius * 0.1,
+            },
+            uranus: {
+                x: centerX + radius * 0.7,
+                y: centerY + radius * 0.7,
+                radius: radius * 0.1,
+            },
         }
     }, [centerX, centerY, radius])
 
@@ -137,6 +167,12 @@ export function StarChart({ chartData, className }: StarChartProps) {
                     <line x1={positions.rising.x} y1={positions.rising.y} x2={positions.venus.x} y2={positions.venus.y} stroke="#ff00ff" strokeDasharray="5,5" />
                     <line x1={positions.venus.x} y1={positions.venus.y} x2={positions.mars.x} y2={positions.mars.y} stroke="#ff00ff" strokeDasharray="5,5" />
                     <line x1={positions.mars.x} y1={positions.mars.y} x2={positions.sun.x} y2={positions.sun.y} stroke="#ff00ff" strokeDasharray="5,5" />
+                    <line x1={positions.mercury.x} y1={positions.mercury.y} x2={positions.jupiter.x} y2={positions.jupiter.y} stroke="#ff00ff" strokeDasharray="5,5" />
+                    <line x1={positions.jupiter.x} y1={positions.jupiter.y} x2={positions.saturn.x} y2={positions.saturn.y} stroke="#ff00ff" strokeDasharray="5,5" />
+                    <line x1={positions.saturn.x} y1={positions.saturn.y} x2={positions.neptune.x} y2={positions.neptune.y} stroke="#ff00ff" strokeDasharray="5,5" />
+                    <line x1={positions.neptune.x} y1={positions.neptune.y} x2={positions.pluto.x} y2={positions.pluto.y} stroke="#ff00ff" strokeDasharray="5,5" />
+                    <line x1={positions.pluto.x} y1={positions.pluto.y} x2={positions.uranus.x} y2={positions.uranus.y} stroke="#ff00ff" strokeDasharray="5,5" />
+                    <line x1={positions.uranus.x} y1={positions.uranus.y} x2={positions.sun.x} y2={positions.sun.y} stroke="#ff00ff" strokeDasharray="5,5" />
                 </g>
                 <g>
                     <circle cx={centerX} cy={centerY} r={radius * 0.25} fill="url(#bg-gradient)" stroke="#ff00ff" strokeWidth="2" />

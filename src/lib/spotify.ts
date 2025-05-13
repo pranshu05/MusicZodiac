@@ -88,23 +88,24 @@ function determineGenreCategory(genres: string[]): string {
         return "Alternative"
     }
 
-    const genreKeywords = {
-        "Pop": ["pop", "dance pop", "electropop", "k-pop", "teen pop", "post-teen pop", "viral"],
-        "Rock": ["rock", "alternative rock", "indie rock", "classic rock", "psychedelic rock", "grunge", "britpop", "post-grunge"],
-        "Hip-Hop": ["hip hop", "rap", "trap", "drill", "grime"],
-        "EDM": ["edm", "electronic", "techno", "house", "dubstep", "trance"],
-        "R&B": ["r&b", "soul", "neo soul"],
-        "Indie Folk": ["folk", "indie folk", "americana", "singer-songwriter"],
-        "Jazz": ["jazz", "bebop", "swing", "fusion"],
-        "Classical": ["classical", "orchestra", "piano", "symphony"],
-        "Metal": ["metal", "heavy metal", "death metal", "black metal", "nu metal"],
-        "Punk": ["punk", "hardcore punk", "pop punk"],
-        "Country": ["country", "contemporary country", "outlaw country"],
-        "Blues": ["blues", "chicago blues", "delta blues"],
-        "Reggae": ["reggae", "dancehall", "ska"],
-        "Soul": ["soul", "motown", "funk"],
-        "Synthwave": ["synthwave", "retrowave", "outrun"],
-        "World": ["bollywood", "indian", "hindi", "ghazal", "sufi", "desi", "bhajan", "qawwali", "marathi", "filmi", "world"]
+    const genreKeywords: Record<string, string[]> = {
+        "Pop": ["pop", "dance pop", "electropop", "k-pop", "teen pop", "post-teen pop", "viral pop", "art pop", "indie pop", "synth-pop", "idol", "j-pop", "mandopop", "cantopop", "pop urbaine", "bedroom pop"],
+        "Electronic": ["electronic", "edm", "techno", "house", "dubstep", "trance", "drum and bass", "ambient", "electronica", "downtempo", "synthwave", "retrowave", "outrun", "idm", "big room", "future bass", "electro house", "hardstyle", "deep house", "progressive house", "eurodance", "gabber", "breakcore"],
+        "Hip Hop": ["hip hop", "rap", "trap", "drill", "grime", "conscious hip hop", "gangsta rap", "boom bap", "mumble rap", "underground hip hop", "french hip hop", "uk hip hop", "desi hip hop", "chicano rap", "dirty south rap"],
+        "R&B": ["r&b", "contemporary r&b", "neo soul", "quiet storm", "new jack swing", "urban contemporary", "alt r&b", "indie r&b"],
+        "Latin": ["latin", "reggaeton", "latin pop", "bachata", "salsa", "merengue", "cumbia", "latin urban", "latin alternative", "latin rock", "trap latino", "regional mexican", "corridos", "norteño", "banda", "mariachi"],
+        "Rock": ["rock", "alternative rock", "indie rock", "classic rock", "psychedelic rock", "grunge", "britpop", "post-grunge", "hard rock", "soft rock", "post-rock", "prog rock", "garage rock", "southern rock", "punk rock", "glam rock", "math rock", "folk rock", "krautrock", "lo-fi rock"],
+        "Metal": ["metal", "heavy metal", "death metal", "black metal", "nu metal", "thrash metal", "metalcore", "power metal", "progressive metal", "doom metal", "sludge metal", "symphonic metal", "folk metal", "viking metal", "gothic metal"],
+        "Country": ["country", "contemporary country", "outlaw country", "country pop", "country rock", "bluegrass", "americana", "country rap", "nashville sound", "texas country", "red dirt", "modern country rock"],
+        "Folk/Acoustic": ["folk", "indie folk", "acoustic", "singer-songwriter", "contemporary folk", "traditional folk", "folk rock", "chamber folk", "freak folk", "new acoustic", "canadian folk", "celtic folk"],
+        "Classical": ["classical", "orchestra", "piano", "symphony", "baroque", "opera", "chamber music", "contemporary classical", "neoclassical", "minimalism", "romanticism", "early music", "modern classical"],
+        "Jazz": ["jazz", "bebop", "swing", "fusion", "smooth jazz", "vocal jazz", "free jazz", "cool jazz", "modal jazz", "hard bop", "jazz funk", "gypsy jazz", "jazz fusion", "jazz blues", "bossa nova"],
+        "Blues": ["blues", "chicago blues", "delta blues", "electric blues", "rhythm and blues", "contemporary blues", "country blues", "jump blues", "texas blues", "blues rock", "modern blues"],
+        "Reggae": ["reggae", "dancehall", "ska", "dub", "roots reggae", "lover's rock", "reggae fusion", "riddim", "ragga"],
+        "Soul": ["soul", "motown", "funk", "neo-soul", "deep soul", "southern soul", "psychedelic soul", "blue-eyed soul", "northern soul"],
+        "World/Traditional": ["world", "bollywood", "indian", "hindi", "ghazal", "sufi", "desi", "bhajan", "qawwali", "marathi", "filmi", "afrobeat", "afropop", "celtic", "klezmer", "balkan", "african", "asian", "middle eastern", "gypsy", "flamenco", "fado", "turkish pop", "arab pop", "thai pop", "japanese traditional", "tuvan throat singing", "mongolian pop"],
+        "Easy Listening": ["easy listening", "lounge", "bossa nova", "exotica", "muzak", "adult contemporary", "elevator music", "chill out", "beautiful music", "instrumental pop"],
+        "New Age": ["new age", "meditation", "relaxation", "healing", "spiritual", "environmental", "space music", "nature sounds", "ambient worship", "ethereal wave"]
     }
 
     const counts: Record<string, number> = {}
@@ -113,7 +114,10 @@ function determineGenreCategory(genres: string[]): string {
         const lowerGenre = genre.toLowerCase()
 
         for (const [category, keywords] of Object.entries(genreKeywords)) {
-            if (keywords.some(keyword => lowerGenre.includes(keyword))) {
+            if (keywords.some(keyword => keyword === lowerGenre)) {
+                counts[category] = (counts[category] || 0) + 2
+            }
+            else if (keywords.some(keyword => lowerGenre.includes(keyword))) {
                 counts[category] = (counts[category] || 0) + 1
             }
         }
@@ -123,7 +127,7 @@ function determineGenreCategory(genres: string[]): string {
         const lowerGenres = genres.map(g => g.toLowerCase())
 
         if (lowerGenres.some(g => g.includes("bhajan") || g.includes("sufi") || g.includes("filmi") || g.includes("bollywood") || g.includes("desi"))) {
-            return "World"
+            return "World/Traditional"
         }
 
         if (lowerGenres.some(g => g.includes("rock") || g.includes("grunge"))) {
@@ -134,7 +138,63 @@ function determineGenreCategory(genres: string[]): string {
             return "Pop"
         }
 
-        return "Alternative" 
+        if (lowerGenres.some(g => g.includes("electronic") || g.includes("techno") || g.includes("edm"))) {
+            return "Electronic"
+        }
+
+        if (lowerGenres.some(g => g.includes("hip hop") || g.includes("rap") || g.includes("trap"))) {
+            return "Hip Hop"
+        }
+
+        if (lowerGenres.some(g => g.includes("r&b"))) {
+            return "R&B"
+        }
+
+        if (lowerGenres.some(g => g.includes("country"))) {
+            return "Country"
+        }
+
+        if (lowerGenres.some(g => g.includes("folk") || g.includes("acoustic"))) {
+            return "Folk/Acoustic"
+        }
+
+        if (lowerGenres.some(g => g.includes("classical"))) {
+            return "Classical"
+        }
+
+        if (lowerGenres.some(g => g.includes("jazz"))) {
+            return "Jazz"
+        }
+
+        if (lowerGenres.some(g => g.includes("blues"))) {
+            return "Blues"
+        }
+
+        if (lowerGenres.some(g => g.includes("reggae"))) {
+            return "Reggae"
+        }
+
+        if (lowerGenres.some(g => g.includes("soul"))) {
+            return "Soul"
+        }
+
+        if (lowerGenres.some(g => g.includes("easy listening") || g.includes("lounge"))) {
+            return "Easy Listening"
+        }
+
+        if (lowerGenres.some(g => g.includes("new age"))) {
+            return "New Age"
+        }
+
+        if (lowerGenres.some(g => g.includes("world") || g.includes("traditional"))) {
+            return "World/Traditional"
+        }
+
+        if (lowerGenres.some(g => g.includes("alternative") || g.includes("indie"))) {
+            return "Alternative"
+        }
+
+        return "Alternative"
     }
 
     let maxCategory = "Alternative"
@@ -196,11 +256,17 @@ function assignPositionsAstrologically(
     genreGroups: Record<string, any[]>
 ): MusicChartData {
     const positions = {
-        sun: ["Rock", "Pop", "Alternative", "Metal"],
-        moon: ["R&B", "Soul", "Classical", "Indie Folk"], 
-        rising: ["Pop", "EDM", "Synthwave", "Alternative"],
-        venus: ["R&B", "Pop", "Soul", "Classical", "Indie Folk"],
-        mars: ["Rock", "Metal", "Punk", "Hip-Hop"] 
+        sun: ["Rock", "Pop", "Hip Hop", "Electronic", "Alternative"],
+        moon: ["R&B", "Soul", "Classical", "Folk/Acoustic", "Easy Listening", "New Age"],
+        rising: ["Pop", "Electronic", "Alternative", "Latin", "R&B"],
+        venus: ["R&B", "Pop", "Soul", "Classical", "Folk/Acoustic", "Easy Listening"],
+        mars: ["Rock", "Metal", "Hip Hop", "Electronic"],
+        mercury: ["Hip Hop", "Pop", "Alternative", "Jazz", "R&B"],
+        jupiter: ["World/Traditional", "Jazz", "Classical", "Soul", "Reggae"],
+        saturn: ["Classical", "Folk/Acoustic", "Blues", "Jazz", "Rock"],
+        neptune: ["Electronic", "New Age", "Classical", "Folk/Acoustic", "Pop"],
+        pluto: ["Metal", "Rock", "Hip Hop", "Alternative", "Electronic"],
+        uranus: ["Electronic", "Alternative", "Hip Hop", "Metal", "Experimental"]
     }
 
     const chartData: MusicChartData = {
@@ -208,7 +274,13 @@ function assignPositionsAstrologically(
         moon: { sign: "", artists: [] },
         rising: { sign: "", artists: [] },
         venus: { sign: "", artists: [] },
-        mars: { sign: "", artists: [] }
+        mars: { sign: "", artists: [] },
+        mercury: { sign: "", artists: [] },
+        jupiter: { sign: "", artists: [] },
+        saturn: { sign: "", artists: [] },
+        neptune: { sign: "", artists: [] },
+        pluto: { sign: "", artists: [] },
+        uranus: { sign: "", artists: [] }
     }
 
     const genreCategories = Object.keys(genreGroups)
