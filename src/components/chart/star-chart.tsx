@@ -12,7 +12,6 @@ interface StarChartProps {
 
 export function StarChart({ chartData, className }: StarChartProps) {
     const svgRef = useRef<SVGSVGElement>(null)
-    const [activePosition, setActivePosition] = useState<keyof typeof CHART_POSITIONS | null>(null)
     const [dimensions, setDimensions] = useState({ width: 300, height: 300 })
     const [isMounted, setIsMounted] = useState(false)
 
@@ -108,9 +107,6 @@ export function StarChart({ chartData, className }: StarChartProps) {
         return `${position}-${sign.toLowerCase().replace(/\s+/g, "-")}-gradient`
     }, [])
 
-    const handlePositionHover = useCallback((position: keyof typeof CHART_POSITIONS | null) => {
-        setActivePosition(position)
-    }, [])
 
     const stars = useMemo(() => {
         return Array.from({ length: 20 }).map((_, i) => {
@@ -183,47 +179,19 @@ export function StarChart({ chartData, className }: StarChartProps) {
                     const signData = chartData[positionKey]
                     if (!signData) return null
 
-                    const isActive = activePosition === positionKey
                     const gradientId = getSignGradientId(position, signData.sign)
 
                     return (
-                        <g key={position} className={`cursor-pointer transition-opacity duration-300 ${isActive ? "opacity-100" : "opacity-80 hover:opacity-100"}`} onMouseEnter={() => handlePositionHover(positionKey)} onMouseLeave={() => handlePositionHover(null)}>
+                        <g key={position} className={`transition-opacity duration-300`} >
                             <circle cx={centerX} cy={centerY} r={Math.sqrt(Math.pow(pos.x - centerX, 2) + Math.pow(pos.y - centerY, 2))} fill="none" stroke={getSignColor(signData.sign)} strokeWidth="1" strokeOpacity="0.2" strokeDasharray="3,3" />
-                            <circle cx={pos.x} cy={pos.y} r={pos.radius * 1.5} fill={`url(#${gradientId})`} opacity={isActive ? 0.4 : 0.2} />
-                            <circle cx={pos.x} cy={pos.y} r={pos.radius} fill={`url(#${gradientId})`} stroke={getSignColor(signData.sign)} strokeWidth={isActive ? 3 : 2} />
+                            <circle cx={pos.x} cy={pos.y} r={pos.radius * 1.5} fill={`url(#${gradientId})`} />
+                            <circle cx={pos.x} cy={pos.y} r={pos.radius} fill={`url(#${gradientId})`} stroke={getSignColor(signData.sign)} />
                             <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={pos.radius * 0.8} fontWeight="bold">{position.charAt(0).toUpperCase()}</text>
                         </g>
                     )
                 })}
                 {stars}
             </svg>
-            <div className="mt-6 bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-4 border border-purple-500/20">
-                {activePosition ? (
-                    <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full" style={{ backgroundColor: getSignColor(chartData[activePosition].sign) }} />
-                            <h3 className="text-xl font-bold text-white">{activePosition.charAt(0).toUpperCase() + activePosition.slice(1)} Sign: {chartData[activePosition].sign}</h3>
-                        </div>
-                        <p className="text-gray-200">{CHART_POSITIONS[activePosition]}</p>
-                        <p className="text-gray-300">{MUSIC_SIGNS[chartData[activePosition].sign as keyof typeof MUSIC_SIGNS]?.description}</p>
-                        {chartData[activePosition].artists.length > 0 && (
-                            <div className="mt-3">
-                                <h4 className="text-sm font-medium text-gray-300">Top Artists:</h4>
-                                <ul className="mt-1 space-y-1">
-                                    {chartData[activePosition].artists.slice(0, 3).map((artist) => (
-                                        <li key={artist.id} className="text-gray-400">{artist.name}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                    </div>
-                ) : (
-                    <div className="flex items-start gap-3">
-                        <Info className="text-pink-400 mt-1 flex-shrink-0" size={20} />
-                        <p className="text-gray-300">Hover over each celestial body to learn about your music zodiac signs.</p>
-                    </div>
-                )}
-            </div>
         </div>
     )
 }

@@ -1,7 +1,7 @@
 "use client"
 import type { MusicChartData } from "@/types/spotify"
 import { MUSIC_SIGNS, CHART_POSITIONS } from "@/utils/constants"
-import { Music, Star, Sparkles, Heart, Flame } from "lucide-react"
+import { Music, Star, Sparkles, Heart, Flame, CircleEllipsis, CircleDot, Orbit, Zap, Waves, CircleSlash } from "lucide-react"
 import { useState } from "react"
 
 interface ChartDetailsProps {
@@ -24,6 +24,18 @@ export function ChartDetails({ chartData, username }: ChartDetailsProps) {
                 return <Heart className="text-pink-400" />
             case "mars":
                 return <Flame className="text-red-500" />
+            case "mercury":
+                return <CircleEllipsis className="text-green-400" />
+            case "jupiter":
+                return <CircleDot className="text-orange-400" />
+            case "saturn":
+                return <Orbit className="text-gray-500" />
+            case "uranus":
+                return <Zap className="text-teal-400" />
+            case "neptune":
+                return <Waves className="text-blue-500" />
+            case "pluto":
+                return <CircleSlash className="text-purple-600" />
             default:
                 return <Music className="text-gray-400" />
         }
@@ -65,7 +77,7 @@ export function ChartDetails({ chartData, username }: ChartDetailsProps) {
                             {isExpanded && (
                                 <div className="px-5 pb-5 pt-0 space-y-4">
                                     <div className="h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"></div>
-                                    <div className="flex flex-col md:flex-row gap-6">
+                                    <div className="flex flex-col">
                                         <div className="flex-grow space-y-4">
                                             <div>
                                                 <h4 className="text-lg font-semibold text-white mb-2">About Your {data.sign} {position.charAt(0).toUpperCase() + position.slice(1)}</h4>
@@ -73,11 +85,11 @@ export function ChartDetails({ chartData, username }: ChartDetailsProps) {
                                             </div>
                                             {sign.element && sign.planet && (
                                                 <div className="flex gap-4">
-                                                    <div className="bg-purple-900/40 rounded-lg px-4 py-2 border border-purple-500/20">
+                                                    <div className="bg-purple-900/40 rounded-lg px-4 py-1 border border-purple-500/20">
                                                         <span className="text-xs text-purple-300">Element</span>
                                                         <p className="font-medium text-white">{sign.element}</p>
                                                     </div>
-                                                    <div className="bg-purple-900/40 rounded-lg px-4 py-2 border border-purple-500/20">
+                                                    <div className="bg-purple-900/40 rounded-lg px-4 py-1 border border-purple-500/20">
                                                         <span className="text-xs text-purple-300">Planet</span>
                                                         <p className="font-medium text-white">{sign.planet}</p>
                                                     </div>
@@ -85,7 +97,7 @@ export function ChartDetails({ chartData, username }: ChartDetailsProps) {
                                             )}
                                         </div>
                                         {data.artists.length > 0 && (
-                                            <div className="md:w-1/3">
+                                            <div className="w-full mt-4">
                                                 <h4 className="text-sm font-medium text-purple-300 mb-3">Top Artists:</h4>
                                                 <div className="space-y-3">
                                                     {data.artists.map((artist) => (

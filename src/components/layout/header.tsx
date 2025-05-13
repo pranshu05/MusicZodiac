@@ -25,6 +25,7 @@ export function Header() {
                         <>
                             <NavLink href={ROUTES.CHART} currentPath={pathname}>My Chart</NavLink>
                             <NavLink href={`${ROUTES.PROFILE}/${session.user.username}`} currentPath={pathname}>Profile</NavLink>
+                            <NavLink href={ROUTES.COMPATIBILITY} currentPath={pathname}>Compatibility</NavLink>
                             <div className="relative group">
                                 <div className="flex items-center space-x-2 cursor-pointer">
                                     {session.user.image ? (
