@@ -15,7 +15,7 @@ export function ProfileCard({ user, isOwnProfile }: ProfileCardProps) {
                 <div className="absolute -bottom-16 left-8">
                     <div className="w-32 h-32 rounded-full border-4 border-purple-900 overflow-hidden box-glow-pink">
                         {user.image ? (
-                            <img src={user.image} alt={user.name || "User"} width={128} height={128} className="object-cover" />
+                            <img src={user.image} alt={user.name || "User"} width={128} height={128} className="object-cover w-full h-full" />
                         ) : (
                             <div className="w-full h-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center"><span className="text-4xl font-bold text-white">{user.name?.charAt(0) || "U"}</span></div>
                         )}

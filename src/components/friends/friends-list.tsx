@@ -16,7 +16,7 @@ export function FriendsList({ friends }: FriendsListProps) {
                             <Link href={`/profile/${friend.username || friend.id}`} className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full overflow-hidden">
                                     {friend.image ? (
-                                        <img src={friend.image} alt={friend.name || "User"} width={40} height={40} className="object-cover" />
+                                        <img src={friend.image} alt={friend.name || "User"} width={40} height={40} className="object-cover w-full h-full" />
                                     ) : (
                                         <div className="w-full h-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center"><span className="font-bold text-white">{friend.name?.charAt(0) || "U"}</span></div>
                                     )}

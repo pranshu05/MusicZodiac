@@ -103,7 +103,7 @@ export function ChartDetails({ chartData, username }: ChartDetailsProps) {
                                                     {data.artists.map((artist) => (
                                                         <div key={artist.id} className="flex items-center gap-3 bg-purple-900/40 rounded-lg p-2 border border-purple-500/20">
                                                             {artist.images && artist.images.length > 0 ? (
-                                                                <div className="w-10 h-10 rounded-full overflow-hidden"><img src={artist.images[0].url} alt={artist.name} width={40} height={40} className="object-cover" /></div>
+                                                                <div className="w-10 h-10 rounded-full overflow-hidden"><img src={artist.images[0].url} alt={artist.name} width={40} height={40} className="object-cover w-full h-full" /></div>
                                                             ) : (
                                                                 <div className="w-10 h-10 rounded-full bg-purple-800 flex items-center justify-center"><Music size={16} className="text-white" /></div>
                                                             )}
