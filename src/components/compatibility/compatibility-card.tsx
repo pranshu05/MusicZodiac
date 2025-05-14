@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const CompatibilityCard = ({ user, score, matchingSigns, matchingArtists, matchingPlanets, matchingElements }: { user: any; score: number; matchingSigns: string[]; matchingArtists: number; matchingPlanets: number; matchingElements: number }) => (
+export const CompatibilityCard = ({ user, score, matchingSigns, matchingArtists, matchingElements }: { user: any; score: number; matchingSigns: string[]; matchingArtists: number; matchingElements: number }) => (
     <Link href={`/profile/${user.username}`} className="block">
         <div className="flex items-center justify-between p-4 bg-purple-900/30 rounded-lg border border-purple-500/20 hover:border-purple-500/40 transition-all">
             <div className="flex items-center gap-4">
@@ -11,7 +11,7 @@ export const CompatibilityCard = ({ user, score, matchingSigns, matchingArtists,
                 )}
                 <div>
                     <h3 className="font-medium text-white">{user.name || user.username || "Music Lover"}</h3>
-                    <div className="flex text-sm text-purple-300">
+                    <div className="hidden lg:flex text-sm text-purple-300">
                         {matchingSigns.length > 0 && <p>Matching: {matchingSigns.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(", ")}</p>}
                         {matchingArtists > 0 && <p>, {matchingArtists} Artists</p>}
                         {matchingElements > 0 && <p>, {matchingElements} Elements</p>}

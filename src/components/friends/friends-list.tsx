@@ -7,7 +7,7 @@ interface FriendsListProps {
 
 export function FriendsList({ friends }: FriendsListProps) {
     return (
-        <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-6 border border-purple-500/20 box-glow">
+        <div className="h-full bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-6 border border-purple-500/20 box-glow">
             <h2 className="text-xl font-bold mb-6 text-glow">Your Friends</h2>
             {friends.length > 0 ? (
                 <div className="space-y-4">
