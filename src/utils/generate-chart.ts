@@ -2,6 +2,56 @@ import { prisma } from "@/lib/prisma";
 import { getSpotifyData } from "@/lib/spotify";
 import type { User } from "@prisma/client";
 
+type OptimizedArtist = {
+    id: string;
+    name: string;
+    image?: string;
+};
+
+type OptimizedChartData = {
+    [key: string]: {
+        sign: string;
+        artists: OptimizedArtist[];
+    };
+};
+
+function optimizeChartData(fullChartData: any): OptimizedChartData {
+    try {
+        if (!fullChartData) {
+            return {};
+        }
+
+        const optimizedData: OptimizedChartData = {};
+
+        Object.keys(fullChartData).forEach(key => {
+            const signData = fullChartData[key];
+
+            if (signData && signData.artists && Array.isArray(signData.artists)) {
+                optimizedData[key] = {
+                    sign: signData.sign || '',
+                    artists: signData.artists.map((artist: any) => {
+                        const optimizedArtist: OptimizedArtist = {
+                            id: artist.id || '',
+                            name: artist.name || ''
+                        };
+
+                        if (artist.images && artist.images.length > 0) {
+                            optimizedArtist.image = artist.images[0].url;
+                        }
+
+                        return optimizedArtist;
+                    })
+                };
+            }
+        });
+
+        return optimizedData;
+    } catch (error) {
+        console.error('Error optimizing chart data:', error);
+        return {};
+    }
+}
+
 export async function generateAndSaveChart(user: User) {
     try {
         if (!user.id) {
@@ -60,11 +110,13 @@ export async function generateAndSaveChart(user: User) {
         }
 
         const spotifyToken = account.access_token;
-        const chartData = await getSpotifyData(spotifyToken);
+        const fullChartData = await getSpotifyData(spotifyToken);
 
-        if (!chartData) {
+        if (!fullChartData) {
             throw new Error("Failed to generate chart data");
         }
+
+        const optimizedChartData = optimizeChartData(fullChartData);
 
         const existingChart = await prisma.musicChart.findUnique({
             where: {
@@ -80,7 +132,7 @@ export async function generateAndSaveChart(user: User) {
                     userId: user.id
                 },
                 data: {
-                    chartData: chartData as any,
+                    chartData: optimizedChartData as any,
                     updatedAt: new Date()
                 }
             });
@@ -88,7 +140,7 @@ export async function generateAndSaveChart(user: User) {
             result = await prisma.musicChart.create({
                 data: {
                     userId: user.id,
-                    chartData: chartData as any,
+                    chartData: optimizedChartData as any,
                     generatedAt: new Date()
                 }
             });
