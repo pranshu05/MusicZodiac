@@ -16,7 +16,6 @@ export function FeatureShowcase() {
             </div>
             <div className=" items-center">
                 <h3 className="text-2xl font-bold mb-4 text-glow-pink">Discover & Connect</h3>
-                <p className="text-purple-200 mb-4">Get personalized music recommendations based on your chart positions.</p>
                 <p className="text-purple-200 mb-4">Find musical soulmates with compatible charts and shared tastes.</p>
                 <p className="text-purple-200">Share your unique chart with friends and on social media.</p>
             </div>

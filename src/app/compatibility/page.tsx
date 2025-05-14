@@ -57,7 +57,7 @@ export default async function CompatibilityPage() {
                 </div>
                 <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-6 border border-purple-500/20 box-glow mb-8">
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-bold text-glow">Your Top Matches</h2>
+                        <h2 className="text-xl font-bold text-glow">Your Top Matches on Music Zodiac</h2>
                         <Link href="/friends" className="flex items-center gap-2 text-pink-400 hover:text-pink-300 transition-colors">
                             <Users size={18} />
                             <span>Find Friends</span>

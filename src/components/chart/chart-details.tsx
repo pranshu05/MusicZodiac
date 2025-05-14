@@ -52,8 +52,7 @@ export function ChartDetails({ chartData, username }: ChartDetailsProps) {
     return (
         <div className="space-y-8">
             <div className="text-center">
-                <h2 className="text-3xl font-bold text-white mb-2 text-glow-pink">{username ? `${username}'s` : "Your"} Music Birth Chart</h2>
-                <p className="text-purple-200">Based on your Spotify listening habits, we've calculated your unique music zodiac chart.</p>
+                <h2 className="text-3xl font-bold text-white mb-2 text-glow-pink">{`${username}'s`} Music Birth Chart</h2>
             </div>
             <div className="space-y-6">
                 {Object.entries(chartData).map(([position, data]) => {
@@ -80,7 +79,7 @@ export function ChartDetails({ chartData, username }: ChartDetailsProps) {
                                     <div className="flex flex-col">
                                         <div className="flex-grow space-y-4">
                                             <div>
-                                                <h4 className="text-lg font-semibold text-white mb-2">About Your {data.sign} {position.charAt(0).toUpperCase() + position.slice(1)}</h4>
+                                                <h4 className="text-lg font-semibold text-white mb-2">About {username}'s {data.sign} {position.charAt(0).toUpperCase() + position.slice(1)}</h4>
                                                 <p className="text-purple-200">{sign.description}</p>
                                             </div>
                                             {sign.element && sign.planet && (
@@ -101,14 +100,14 @@ export function ChartDetails({ chartData, username }: ChartDetailsProps) {
                                                 <h4 className="text-sm font-medium text-purple-300 mb-3">Top Artists:</h4>
                                                 <div className="space-y-3">
                                                     {data.artists.map((artist) => (
-                                                        <div key={artist.id} className="flex items-center gap-3 bg-purple-900/40 rounded-lg p-2 border border-purple-500/20">
+                                                        <a href={`https://open.spotify.com/artist/${artist.id}`} target="_blank" key={artist.id} className="flex items-center gap-3 bg-purple-900/40 rounded-lg p-2 border border-purple-500/20">
                                                             {artist.image && artist.image.length > 0 ? (
                                                                 <div className="w-10 h-10 rounded-full overflow-hidden"><img src={artist.image} alt={artist.name} width={40} height={40} className="object-cover w-full h-full" /></div>
                                                             ) : (
                                                                 <div className="w-10 h-10 rounded-full bg-purple-800 flex items-center justify-center"><Music size={16} className="text-white" /></div>
                                                             )}
                                                             <span className="text-white">{artist.name}</span>
-                                                        </div>
+                                                        </a>
                                                     ))}
                                                 </div>
                                             </div>

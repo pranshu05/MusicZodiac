@@ -128,7 +128,7 @@ export function StarChart({ chartData, className }: StarChartProps) {
                 <div className="mt-6 bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-4 border border-purple-500/20">
                     <div className="flex items-start gap-3">
                         <Info className="text-pink-400 mt-1 flex-shrink-0" size={20} />
-                        <p className="text-gray-300">Your music zodiac chart is being prepared...</p>
+                        <p className="text-gray-300">Music zodiac chart is being prepared...</p>
                     </div>
                 </div>
             </div>

@@ -95,7 +95,7 @@
         background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.05) 51%);
         background-size: 100% 4px;
         pointer-events: none;
-        z-index: 10;
+        z-index: 100;
     }
 
     @keyframes glitch {

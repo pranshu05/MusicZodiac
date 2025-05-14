@@ -71,10 +71,12 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                     <div className="lg:sticky lg:top-24">
                         <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-6 border border-purple-500/20 box-glow">
                             <StarChart chartData={chartData} className="max-w-md mx-auto" />
-                            <div className="mt-6 text-center">
-                                <h2 className="text-xl font-bold text-glow-pink mb-2">Share This Chart</h2>
-                                <ShareButtons username={user.username || user.id} />
-                            </div>
+                            {isOwnProfile && (
+                                <div className="mt-6 text-center">
+                                    <h2 className="text-xl font-bold text-glow-pink mb-2">Share This Chart</h2>
+                                    <ShareButtons username={user.username || user.id} />
+                                </div>
+                            )}
                         </div>
                     </div>
                     <ChartDetails chartData={chartData} username={user.name || undefined} />
