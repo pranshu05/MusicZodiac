@@ -11,6 +11,9 @@ import { calculateCompatibility } from "@/utils/compatibility"
 import { CompatibilityCard } from "@/components/compatibility/compatibility-card"
 import { CompatibilityGuide } from "@/components/compatibility/compatibility-guide"
 
+const TOP_MATCHES_COUNT = 5
+const BATCH_SIZE = 100
+
 export default async function CompatibilityPage() {
     const session = await getServerSession(authOptions)
 
@@ -43,24 +46,7 @@ export default async function CompatibilityPage() {
 
     const chartData = userChart.chartData as unknown as MusicChartData
 
-    const otherUsers = await prisma.user.findMany({
-        where: {
-            id: { not: session.user.id },
-            musicChart: { isNot: null },
-        },
-        include: { musicChart: true },
-        take: 5,
-    })
-
-    const compatibilityScores = otherUsers
-        .map(user => {
-            const otherChartData = user.musicChart?.chartData as unknown as MusicChartData
-            if (!otherChartData) return { user, score: 0, matchingSigns: [], matchingArtists: 0, matchingPlanets: 0, matchingElements: 0 }
-
-            const compatibility = calculateCompatibility(chartData, otherChartData)
-            return { user, ...compatibility }
-        })
-        .sort((a, b) => b.score - a.score)
+    const compatibilityScores = await fetchTopCompatibleUsers(session.user.id, chartData, TOP_MATCHES_COUNT)
 
     return (
         <div className="mx-auto px-4 py-8 space-y-8">
@@ -104,4 +90,51 @@ export default async function CompatibilityPage() {
             </div>
         </div>
     )
+}
+
+async function fetchTopCompatibleUsers(currentUserId: string, userChartData: MusicChartData, limit: number) {
+    let topMatches: Array<{ user: any; score: number; matchingSigns: string[]; matchingArtists: number; matchingPlanets: number; matchingElements: number; }> = [];
+
+    let processedCount = 0;
+    let hasMore = true;
+
+    while (hasMore) {
+        const users = await prisma.user.findMany({
+            where: {
+                id: { not: currentUserId },
+                musicChart: { isNot: null },
+            },
+            include: { musicChart: true },
+            take: BATCH_SIZE,
+            skip: processedCount,
+            orderBy: { id: 'asc' },
+        });
+
+        if (users.length === 0) {
+            hasMore = false;
+            break;
+        }
+
+        processedCount += users.length;
+
+        const batchScores = users
+            .map(user => {
+                const otherChartData = user.musicChart?.chartData as unknown as MusicChartData;
+                if (!otherChartData) return null;
+
+                const compatibility = calculateCompatibility(userChartData, otherChartData);
+                return { user, ...compatibility };
+            })
+            .filter(score => score !== null) as typeof topMatches;
+
+        topMatches = [...topMatches, ...batchScores]
+            .sort((a, b) => b.score - a.score)
+            .slice(0, limit);
+
+        if (users.length < BATCH_SIZE) {
+            hasMore = false;
+        }
+    }
+
+    return topMatches;
 }
