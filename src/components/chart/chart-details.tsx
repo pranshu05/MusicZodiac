@@ -1,8 +1,8 @@
 "use client"
 import type { MusicChartData } from "@/types/spotify"
 import { MUSIC_SIGNS, CHART_POSITIONS } from "@/utils/constants"
-import { Music, Star, Sparkles, Heart, Flame, CircleEllipsis, CircleDot, Orbit, Zap, Waves, CircleSlash } from "lucide-react"
-import { useState } from "react"
+import { Music, Star, Sparkles, Heart, Flame, CircleEllipsis, CircleDot, Orbit, Zap, Waves, CircleSlash, } from "lucide-react"
+import { useState, useEffect } from "react"
 
 interface ChartDetailsProps {
     chartData: MusicChartData
@@ -41,6 +41,13 @@ export function ChartDetails({ chartData, username }: ChartDetailsProps) {
         }
     }
 
+    useEffect(() => {
+        const firstPosition = Object.keys(chartData)[0]
+        if (firstPosition) {
+            setExpandedPosition(firstPosition)
+        }
+    }, [chartData])
+
     const toggleExpand = (position: string) => {
         if (expandedPosition === position) {
             setExpandedPosition(null)
@@ -63,7 +70,7 @@ export function ChartDetails({ chartData, username }: ChartDetailsProps) {
                     if (!sign) return null
 
                     return (
-                        <div key={position} className={`bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl border border-purple-500/20 transition-all duration-500 overflow-hidden ${isExpanded ? "box-glow" : "hover:border-purple-500/40"}`} onClick={() => toggleExpand(position)}>
+                        <div key={position} className={`bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl border transition-all duration-500 overflow-hidden ${isExpanded ? "border-purple-400/50 shadow-lg shadow-purple-500/20 box-glow" : "border-purple-500/20 hover:border-purple-500/40 hover:shadow-md hover:shadow-purple-500/10"}`} onClick={() => toggleExpand(position)}>
                             <div className="p-5 cursor-pointer">
                                 <div className="flex items-center gap-4">
                                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isExpanded ? "box-glow-pink" : ""}`} style={{ backgroundColor: sign.color }}>{getSignIcon(position)}</div>
@@ -84,11 +91,11 @@ export function ChartDetails({ chartData, username }: ChartDetailsProps) {
                                             </div>
                                             {sign.element && sign.planet && (
                                                 <div className="flex gap-4">
-                                                    <div className="bg-purple-900/40 rounded-lg px-4 py-1 border border-purple-500/20">
+                                                    <div className="bg-purple-900/40 rounded-lg px-4 py-1 border border-purple-500/20 shadow-sm shadow-purple-500/10">
                                                         <span className="text-xs text-purple-300">Element</span>
                                                         <p className="font-medium text-white">{sign.element}</p>
                                                     </div>
-                                                    <div className="bg-purple-900/40 rounded-lg px-4 py-1 border border-purple-500/20">
+                                                    <div className="bg-purple-900/40 rounded-lg px-4 py-1 border border-purple-500/20 shadow-sm shadow-purple-500/10">
                                                         <span className="text-xs text-purple-300">Planet</span>
                                                         <p className="font-medium text-white">{sign.planet}</p>
                                                     </div>
@@ -100,9 +107,9 @@ export function ChartDetails({ chartData, username }: ChartDetailsProps) {
                                                 <h4 className="text-sm font-medium text-purple-300 mb-3">Top Artists:</h4>
                                                 <div className="space-y-3">
                                                     {data.artists.map((artist) => (
-                                                        <a href={`https://open.spotify.com/artist/${artist.id}`} target="_blank" key={artist.id} className="flex items-center gap-3 bg-purple-900/40 rounded-lg p-2 border border-purple-500/20">
+                                                        <a href={`https://open.spotify.com/artist/${artist.id}`} target="_blank" rel="noopener noreferrer" key={artist.id} className="flex items-center gap-3 bg-purple-900/40 rounded-lg p-2 border border-purple-500/20 hover:border-purple-400/50 hover:bg-purple-800/40 transition-all duration-300">
                                                             {artist.image && artist.image.length > 0 ? (
-                                                                <div className="w-10 h-10 rounded-full overflow-hidden"><img src={artist.image} alt={artist.name} width={40} height={40} className="object-cover w-full h-full" /></div>
+                                                                <div className="w-10 h-10 rounded-full overflow-hidden"><img src={artist.image || "/placeholder.svg"} alt={artist.name} width={40} height={40} className="object-cover w-full h-full" /></div>
                                                             ) : (
                                                                 <div className="w-10 h-10 rounded-full bg-purple-800 flex items-center justify-center"><Music size={16} className="text-white" /></div>
                                                             )}

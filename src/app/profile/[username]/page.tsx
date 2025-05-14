@@ -1,5 +1,5 @@
-import { authOptions } from "@/utils/auth";
-import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/auth"
+import { getServerSession } from "next-auth"
 import { StarChart } from "@/components/chart/star-chart"
 import { ChartDetails } from "@/components/chart/chart-details"
 import { prisma } from "@/lib/prisma"
@@ -17,7 +17,7 @@ interface ProfilePageProps {
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
     const { username } = params
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions)
     const currentUser = session?.user
 
     const user = await prisma.user.findFirst({
@@ -35,41 +35,41 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         where: {
             userId: user.id,
         },
-    });
+    })
 
     if (!userChart) {
         try {
             const userData = await prisma.user.findUnique({
-                where: { id: user.id }
-            });
+                where: { id: user.id },
+            })
 
             if (!userData) {
-                throw new Error("User not found");
+                throw new Error("User not found")
             }
 
-            await generateAndSaveChart(userData);
+            await generateAndSaveChart(userData)
             userChart = await prisma.musicChart.findUnique({
-                where: { userId: user.id }
-            });
+                where: { userId: user.id },
+            })
         } catch (error) {
-            console.error("Failed to generate chart:", error);
+            console.error("Failed to generate chart:", error)
         }
     }
 
     if (!userChart) {
-        throw new Error("Failed to generate or retrieve user chart");
+        throw new Error("Failed to generate or retrieve user chart")
     }
 
     const chartData = userChart.chartData as unknown as MusicChartData
     const isOwnProfile = currentUser?.id === user.id
 
     return (
-        <div className="mx-auto px-4 py-8 space-y-8">
+        <div className="container mx-auto px-4 py-12 pb-24">
             <div className="max-w-7xl mx-auto">
                 <ProfileCard user={user} isOwnProfile={isOwnProfile} />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mt-8">
                     <div className="lg:sticky lg:top-24">
-                        <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-6 border border-purple-500/20 box-glow">
+                        <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-8 border border-purple-500/30 box-glow shadow-xl shadow-purple-900/20">
                             <StarChart chartData={chartData} className="max-w-md mx-auto" />
                             {isOwnProfile && (
                                 <div className="mt-6 text-center">
