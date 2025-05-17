@@ -1,19 +1,24 @@
 "use client"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import type { MusicChartData } from "@/types/spotify"
 import { MUSIC_SIGNS, CHART_POSITIONS } from "@/utils/constants"
 import { cn } from "@/utils/cn"
 import { Info, Orbit } from "lucide-react"
 import { useEffect, useRef, useState, useCallback, useMemo } from "react"
+import { motion } from "framer-motion"
 
 interface StarChartProps {
     chartData: MusicChartData
     className?: string
+    onPositionSelect?: (position: string) => void
+    selectedPosition?: string | null
 }
 
-export function StarChart({ chartData, className }: StarChartProps) {
+export function StarChart({ chartData, className, onPositionSelect, selectedPosition }: StarChartProps) {
     const svgRef = useRef<SVGSVGElement>(null)
     const [dimensions, setDimensions] = useState({ width: 300, height: 300 })
     const [isMounted, setIsMounted] = useState(false)
+    const [hoveredPosition, setHoveredPosition] = useState<string | null>(null)
 
     const { centerX, centerY, radius } = useMemo(() => {
         const centerX = dimensions.width / 2
@@ -23,61 +28,75 @@ export function StarChart({ chartData, className }: StarChartProps) {
     }, [dimensions])
 
     const positions = useMemo(() => {
+        const orbitalDistances = {
+            sun: 0,
+            mercury: radius * 0.25,
+            venus: radius * 0.35,
+            moon: radius * 0.45,
+            mars: radius * 0.55,
+            jupiter: radius * 0.65,
+            saturn: radius * 0.75,
+            uranus: radius * 0.81,
+            neptune: radius * 0.88,
+            pluto: radius * 0.95,
+            rising: radius * 0.55
+        }
+
         return {
             sun: {
                 x: centerX,
-                y: centerY - radius * 0.7,
-                radius: radius * 0.15,
-            },
-            moon: {
-                x: centerX + radius * 0.7,
                 y: centerY,
                 radius: radius * 0.12,
             },
-            rising: {
-                x: centerX,
-                y: centerY + radius * 0.7,
-                radius: radius * 0.12,
+            mercury: {
+                x: centerX + orbitalDistances.mercury * Math.cos(Math.PI * 0.5),
+                y: centerY + orbitalDistances.mercury * Math.sin(Math.PI * 0.5),
+                radius: radius * 0.05,
             },
             venus: {
-                x: centerX - radius * 0.5,
-                y: centerY + radius * 0.5,
-                radius: radius * 0.1,
+                x: centerX + orbitalDistances.venus * Math.cos(Math.PI * 1.2),
+                y: centerY + orbitalDistances.venus * Math.sin(Math.PI * 1.2),
+                radius: radius * 0.07,
+            },
+            moon: {
+                x: centerX + orbitalDistances.moon * Math.cos(Math.PI * 1.7),
+                y: centerY + orbitalDistances.moon * Math.sin(Math.PI * 1.7),
+                radius: radius * 0.06,
             },
             mars: {
-                x: centerX - radius * 0.5,
-                y: centerY - radius * 0.5,
-                radius: radius * 0.1,
+                x: centerX + orbitalDistances.mars * Math.cos(Math.PI * 0.9),
+                y: centerY + orbitalDistances.mars * Math.sin(Math.PI * 0.9),
+                radius: radius * 0.07,
             },
-            mercury: {
-                x: centerX + radius * 0.5,
-                y: centerY - radius * 0.5,
-                radius: radius * 0.1,
+            rising: {
+                x: centerX + orbitalDistances.rising * Math.cos(Math.PI * 0.2),
+                y: centerY + orbitalDistances.rising * Math.sin(Math.PI * 0.2),
+                radius: radius * 0.08,
             },
             jupiter: {
-                x: centerX + radius * 0.5,
-                y: centerY + radius * 0.5,
+                x: centerX + orbitalDistances.jupiter * Math.cos(Math.PI * 1.5),
+                y: centerY + orbitalDistances.jupiter * Math.sin(Math.PI * 1.5),
                 radius: radius * 0.1,
             },
             saturn: {
-                x: centerX - radius * 0.7,
-                y: centerY - radius * 0.7,
-                radius: radius * 0.1,
-            },
-            neptune: {
-                x: centerX - radius * 0.7,
-                y: centerY + radius * 0.7,
-                radius: radius * 0.1,
-            },
-            pluto: {
-                x: centerX + radius * 0.7,
-                y: centerY - radius * 0.7,
-                radius: radius * 0.1,
+                x: centerX + orbitalDistances.saturn * Math.cos(Math.PI * 0.3),
+                y: centerY + orbitalDistances.saturn * Math.sin(Math.PI * 0.3),
+                radius: radius * 0.09,
             },
             uranus: {
-                x: centerX + radius * 0.7,
-                y: centerY + radius * 0.7,
-                radius: radius * 0.1,
+                x: centerX + orbitalDistances.uranus * Math.cos(Math.PI * 1.9),
+                y: centerY + orbitalDistances.uranus * Math.sin(Math.PI * 1.9),
+                radius: radius * 0.075,
+            },
+            neptune: {
+                x: centerX + orbitalDistances.neptune * Math.cos(Math.PI * 1.1),
+                y: centerY + orbitalDistances.neptune * Math.sin(Math.PI * 1.1),
+                radius: radius * 0.075,
+            },
+            pluto: {
+                x: centerX + orbitalDistances.pluto * Math.cos(Math.PI * 0.6),
+                y: centerY + orbitalDistances.pluto * Math.sin(Math.PI * 0.6),
+                radius: radius * 0.04,
             },
         }
     }, [centerX, centerY, radius])
@@ -107,24 +126,21 @@ export function StarChart({ chartData, className }: StarChartProps) {
         return `${position}-${sign.toLowerCase().replace(/\s+/g, "-")}-gradient`
     }, [])
 
-
-    const stars = useMemo(() => {
-        return Array.from({ length: 20 }).map((_, i) => {
-            const x = Math.random() * dimensions.width
-            const y = Math.random() * dimensions.height
-            const size = Math.random() * 2 + 1
-            const opacity = Math.random() * 0.7 + 0.3
-
-            return (
-                <circle key={`star-${i}`} cx={x} cy={y} r={size} fill="white" opacity={opacity} className="animate-pulse" style={{ animationDuration: `${Math.random() * 3 + 2}s` }} />
-            )
-        })
-    }, [dimensions])
+    const handlePositionClick = (position: string) => {
+        if (onPositionSelect) {
+            onPositionSelect(position)
+        }
+    }
 
     if (!isMounted) {
         return (
             <div className={cn("relative w-full", className)}>
-                <div className="w-full aspect-square bg-indigo-950/20 rounded-full flex items-center justify-center"><p className="text-white animate-pulse">Horoscope is generating...</p></div>
+                <div className="w-full aspect-square bg-indigo-950/20 rounded-full flex items-center justify-center">
+                    <motion.div initial={{ opacity: 0.5, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse" }} className="text-white flex flex-col items-center">
+                        <Orbit className="h-12 w-12 mb-3 text-purple-300" />
+                        <p className="text-lg font-medium">Generating cosmic chart...</p>
+                    </motion.div>
+                </div>
                 <div className="mt-6 bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-4 border border-purple-500/20">
                     <div className="flex items-start gap-3">
                         <Info className="text-pink-400 mt-1 flex-shrink-0" size={20} />
@@ -136,62 +152,82 @@ export function StarChart({ chartData, className }: StarChartProps) {
     }
 
     return (
-        <div className={cn("relative w-full", className)}>
-            <svg ref={svgRef} viewBox={`0 0 ${dimensions.width} ${dimensions.height}`} className="w-full h-auto" aria-label="Music Zodiac Star Chart">
-                <defs>
-                    <radialGradient id="bg-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                        <stop offset="0%" stopColor="#9900ff" stopOpacity="0.2" />
-                        <stop offset="100%" stopColor="#1a0044" stopOpacity="0.8" />
-                    </radialGradient>
-                    {Object.entries(chartData).map(([position, data]) => (
-                        <radialGradient key={`gradient-${position}`} id={getSignGradientId(position, data.sign)} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                            <stop offset="0%" stopColor={getSignColor(data.sign)} stopOpacity="0.8" />
-                            <stop offset="100%" stopColor={getSignColor(data.sign)} stopOpacity="0.3" />
+        <TooltipProvider>
+            <div className={cn("relative w-full", className)}>
+                <svg ref={svgRef} viewBox={`0 0 ${dimensions.width} ${dimensions.height}`} className="w-full h-auto" aria-label="Music Zodiac Star Chart">
+                    <defs>
+                        <radialGradient id="bg-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                            <stop offset="0%" stopColor="#9900ff" stopOpacity="0.2" />
+                            <stop offset="100%" stopColor="#1a0044" stopOpacity="0.8" />
                         </radialGradient>
-                    ))}
-                    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="10" result="blur" />
-                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                </defs>
-                <circle cx={centerX} cy={centerY} r={radius * 1.1} fill="none" stroke="#6B46C1" strokeWidth="1" strokeOpacity="0.1" />
-                <circle cx={centerX} cy={centerY} r={radius * 0.9} fill="none" stroke="#ff00ff" strokeWidth="1" strokeOpacity="0.1" />
-                <circle cx={centerX} cy={centerY} r={radius} fill="url(#bg-gradient)" stroke="url(#bg-gradient)" strokeWidth="2" />
-                <g className="constellation-lines" strokeOpacity="0.3" strokeWidth="1">
-                    <line x1={positions.sun.x} y1={positions.sun.y} x2={positions.moon.x} y2={positions.moon.y} stroke="#ff00ff" strokeDasharray="5,5" />
-                    <line x1={positions.moon.x} y1={positions.moon.y} x2={positions.rising.x} y2={positions.rising.y} stroke="#ff00ff" strokeDasharray="5,5" />
-                    <line x1={positions.rising.x} y1={positions.rising.y} x2={positions.venus.x} y2={positions.venus.y} stroke="#ff00ff" strokeDasharray="5,5" />
-                    <line x1={positions.venus.x} y1={positions.venus.y} x2={positions.mars.x} y2={positions.mars.y} stroke="#ff00ff" strokeDasharray="5,5" />
-                    <line x1={positions.mars.x} y1={positions.mars.y} x2={positions.sun.x} y2={positions.sun.y} stroke="#ff00ff" strokeDasharray="5,5" />
-                    <line x1={positions.mercury.x} y1={positions.mercury.y} x2={positions.jupiter.x} y2={positions.jupiter.y} stroke="#ff00ff" strokeDasharray="5,5" />
-                    <line x1={positions.jupiter.x} y1={positions.jupiter.y} x2={positions.saturn.x} y2={positions.saturn.y} stroke="#ff00ff" strokeDasharray="5,5" />
-                    <line x1={positions.saturn.x} y1={positions.saturn.y} x2={positions.neptune.x} y2={positions.neptune.y} stroke="#ff00ff" strokeDasharray="5,5" />
-                    <line x1={positions.neptune.x} y1={positions.neptune.y} x2={positions.pluto.x} y2={positions.pluto.y} stroke="#ff00ff" strokeDasharray="5,5" />
-                    <line x1={positions.pluto.x} y1={positions.pluto.y} x2={positions.uranus.x} y2={positions.uranus.y} stroke="#ff00ff" strokeDasharray="5,5" />
-                    <line x1={positions.uranus.x} y1={positions.uranus.y} x2={positions.sun.x} y2={positions.sun.y} stroke="#ff00ff" strokeDasharray="5,5" />
-                </g>
-                <g>
-                    <circle cx={centerX} cy={centerY} r={radius * 0.25} fill="url(#bg-gradient)" stroke="#ff00ff" strokeWidth="2" />
-                    <text x={centerX} y={centerY} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={radius * 0.15} fontWeight="bold"><Orbit /></text>
-                </g>
-                {Object.entries(positions).map(([position, pos]) => {
-                    const positionKey = position as keyof typeof CHART_POSITIONS
-                    const signData = chartData[positionKey]
-                    if (!signData) return null
+                        {Object.entries(chartData).map(([position, data]) => (
+                            <radialGradient key={`gradient-${position}`} id={getSignGradientId(position, data.sign)} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                                <stop offset="0%" stopColor={getSignColor(data.sign)} stopOpacity="0.8" />
+                                <stop offset="100%" stopColor={getSignColor(data.sign)} stopOpacity="0.3" />
+                            </radialGradient>
+                        ))}
+                        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="10" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                        <filter id="glow-intense" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="4" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                        <filter id="star-glow" x="-100%" y="-100%" width="300%" height="300%">
+                            <feGaussianBlur stdDeviation="2" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+                    <circle cx={centerX} cy={centerY} r={radius * 1.1} fill="none" stroke="#6B46C1" strokeWidth="1" strokeOpacity="0.1" />
+                    <circle cx={centerX} cy={centerY} r={radius * 0.9} fill="none" stroke="#ff00ff" strokeWidth="1" strokeOpacity="0.1" />
+                    <circle cx={centerX} cy={centerY} r={radius} fill="url(#bg-gradient)" stroke="url(#bg-gradient)" strokeWidth="2" />
+                    <g className="constellation-lines" strokeOpacity="0.3" strokeWidth="1">
+                        {Object.entries(positions).flatMap(([pos1, data1], index) => Object.entries(positions).slice(index + 1).map(([pos2, data2]) => (<line key={`${pos1}-${pos2}`} x1={data1.x} y1={data1.y} x2={data2.x} y2={data2.y} stroke="#ff00ff" strokeDasharray="5,5" />)))}
+                    </g>
+                    {Object.entries(positions).map(([position, pos]) => {
+                        const positionKey = position as keyof typeof CHART_POSITIONS
+                        const signData = chartData[positionKey]
+                        if (!signData) return null
 
-                    const gradientId = getSignGradientId(position, signData.sign)
+                        const gradientId = getSignGradientId(position, signData.sign)
+                        const isSelected = selectedPosition === position
+                        const isHovered = hoveredPosition === position
+                        const isActive = isSelected || isHovered
 
-                    return (
-                        <g key={position} className={`transition-opacity duration-300`} >
-                            <circle cx={centerX} cy={centerY} r={Math.sqrt(Math.pow(pos.x - centerX, 2) + Math.pow(pos.y - centerY, 2))} fill="none" stroke={getSignColor(signData.sign)} strokeWidth="1" strokeOpacity="0.2" strokeDasharray="3,3" />
-                            <circle cx={pos.x} cy={pos.y} r={pos.radius * 1.5} fill={`url(#${gradientId})`} />
-                            <circle cx={pos.x} cy={pos.y} r={pos.radius} fill={`url(#${gradientId})`} stroke={getSignColor(signData.sign)} />
-                            <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={pos.radius * 0.8} fontWeight="bold">{position.charAt(0).toUpperCase()}</text>
-                        </g>
-                    )
-                })}
-                {stars}
-            </svg>
-        </div>
+                        return (
+                            <Tooltip key={position}>
+                                <TooltipTrigger asChild>
+                                    <g className={`transition-all duration-300 cursor-pointer`} onClick={() => handlePositionClick(position)} onMouseEnter={() => setHoveredPosition(position)} onMouseLeave={() => setHoveredPosition(null)}>
+                                        <circle cx={centerX} cy={centerY} r={Math.sqrt(Math.pow(pos.x - centerX, 2) + Math.pow(pos.y - centerY, 2))} fill="none" stroke={getSignColor(signData.sign)} strokeWidth={isActive ? "2" : "1"} strokeOpacity={isActive ? "0.6" : "0.2"} strokeDasharray={isActive ? "5,3" : "3,3"} />
+                                        {isActive && (<circle cx={pos.x} cy={pos.y} r={pos.radius * 2} fill={`url(#${gradientId})`} opacity="0.3" filter="url(#glow)" />)}
+                                        <circle cx={pos.x} cy={pos.y} r={pos.radius * (isActive ? 1.2 : 1)} fill={`url(#${gradientId})`} opacity={isActive ? "0.7" : "0.5"} filter={isActive ? "url(#glow-intense)" : ""} />
+                                        <circle cx={pos.x} cy={pos.y} r={pos.radius * (isActive ? 1.2 : 1)} fill={`url(#${gradientId})`} stroke={getSignColor(signData.sign)} strokeWidth={isActive ? "1.2" : "1"} className={isActive ? "animate-pulse-slow" : ""} />
+                                        <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={pos.radius * (isActive ? 1 : 0.8)} fontWeight="bold">{position.charAt(0).toUpperCase()}</text>
+                                    </g>
+                                </TooltipTrigger>
+                                <TooltipContent side="top" className="bg-gradient-to-br from-purple-900 to-fuchsia-900 border-purple-500/50 text-white p-3">
+                                    <p className="font-bold">{position.charAt(0).toUpperCase() + position.slice(1)} in {signData.sign}</p>
+                                    <p className="text-xs text-purple-200 mt-1">{CHART_POSITIONS[positionKey]}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        )
+                    })}
+                </svg>
+                <div className="mt-6 grid grid-cols-3 md:grid-cols-6 gap-2 text-center">
+                    {Object.entries(positions)
+                        .slice(0, 6)
+                        .map(([position]) => {
+                            const positionKey = position as keyof typeof CHART_POSITIONS
+                            const signData = chartData[positionKey]
+                            if (!signData) return null
+
+                            return (
+                                <button key={position} onClick={() => handlePositionClick(position)} className={cn("px-2 py-1 rounded-full text-xs font-medium transition-all", selectedPosition === position ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white" : "bg-purple-900/40 text-purple-200 hover:bg-purple-800/60 hover:text-white",)}>{position.charAt(0).toUpperCase() + position.slice(1)}</button>
+                            )
+                        })}
+                </div>
+            </div>
+        </TooltipProvider>
     )
 }

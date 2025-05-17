@@ -1,6 +1,5 @@
 import { Providers } from "@/app/providers";
 import "./globals.css"
-import { Navigation } from "@/components/layout/navigation"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 
@@ -17,7 +16,6 @@ export default function RootLayout({ children, }: { children: React.ReactNode })
                     <Providers>
                         <Header />
                         <main className="flex-grow">{children}</main>
-                        <Navigation />
                         <Footer />
                     </Providers>
                 </div>
