@@ -1,154 +1,116 @@
-import { prisma } from "@/lib/prisma";
-import { getSpotifyData } from "@/lib/spotify";
-import type { User } from "@prisma/client";
+import { prisma } from "@/lib/prisma"
+import { getLastFmData } from "@/lib/lastfm"
+import type { User } from "@prisma/client"
 
 type OptimizedArtist = {
-    id: string;
-    name: string;
-    image?: string;
-};
+    id: string
+    name: string
+    image?: string
+}
 
 type OptimizedChartData = {
     [key: string]: {
-        sign: string;
-        artists: OptimizedArtist[];
-    };
-};
+        sign: string
+        artists: OptimizedArtist[]
+    }
+}
 
 function optimizeChartData(fullChartData: any): OptimizedChartData {
     try {
         if (!fullChartData) {
-            return {};
+            return {}
         }
 
-        const optimizedData: OptimizedChartData = {};
+        const optimizedData: OptimizedChartData = {}
 
-        Object.keys(fullChartData).forEach(key => {
-            const signData = fullChartData[key];
+        Object.keys(fullChartData).forEach((key) => {
+            const signData = fullChartData[key]
 
             if (signData && signData.artists && Array.isArray(signData.artists)) {
                 optimizedData[key] = {
-                    sign: signData.sign || '',
+                    sign: signData.sign || "",
                     artists: signData.artists.map((artist: any) => {
                         const optimizedArtist: OptimizedArtist = {
-                            id: artist.id || '',
-                            name: artist.name || ''
-                        };
-
-                        if (artist.images && artist.images.length > 0) {
-                            optimizedArtist.image = artist.images[0].url;
+                            id: artist.id || artist.name || "",
+                            name: artist.name || "",
                         }
 
-                        return optimizedArtist;
-                    })
-                };
-            }
-        });
+                        if (artist.image) {
+                            optimizedArtist.image = artist.image
+                        }
 
-        return optimizedData;
+                        return optimizedArtist
+                    }),
+                }
+            }
+        })
+
+        return optimizedData
     } catch (error) {
-        console.error('Error optimizing chart data:', error);
-        return {};
+        console.error("Error optimizing chart data:", error)
+        return {}
     }
 }
 
 export async function generateAndSaveChart(user: User) {
     try {
         if (!user.id) {
-            throw new Error("User ID is required");
+            throw new Error("User ID is required")
         }
 
         const account = await prisma.account.findFirst({
             where: {
                 userId: user.id,
-                provider: 'spotify'
-            }
-        });
-
-        if (account && account.refresh_token) {
-            const isTokenExpired = !account.access_token || (account.expires_at && account.expires_at * 1000 < Date.now());
-
-            if (isTokenExpired) {
-                try {
-                    const clientId = process.env.SPOTIFY_CLIENT_ID;
-                    const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
-
-                    const response = await fetch('https://accounts.spotify.com/api/token', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'Authorization': `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`
-                        },
-                        body: new URLSearchParams({
-                            grant_type: 'refresh_token',
-                            refresh_token: account.refresh_token
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.access_token) {
-                        await prisma.account.update({
-                            where: { id: account.id },
-                            data: {
-                                access_token: data.access_token,
-                                expires_at: Math.floor(Date.now() / 1000 + (data.expires_in || 3600)),
-                                ...(data.refresh_token && { refresh_token: data.refresh_token })
-                            }
-                        });
-
-                        account.access_token = data.access_token;
-                    }
-                } catch (refreshError) {
-                    console.error('Failed to refresh token:', refreshError);
-                }
-            }
-        }
+                provider: "lastfm",
+            },
+        })
 
         if (!account || !account.access_token) {
-            throw new Error("Spotify account or access token not found");
+            throw new Error("Last.fm account or session key not found")
         }
 
-        const spotifyToken = account.access_token;
-        const fullChartData = await getSpotifyData(spotifyToken);
+        const sessionKey = account.access_token
+        const username = user.username || user.id
+
+        const fullChartData = await getLastFmData(sessionKey, username)
 
         if (!fullChartData) {
-            throw new Error("Failed to generate chart data");
+            throw new Error("Failed to generate chart data")
         }
 
-        const optimizedChartData = optimizeChartData(fullChartData);
+        const optimizedChartData = optimizeChartData(fullChartData)
 
         const existingChart = await prisma.musicChart.findUnique({
             where: {
-                userId: user.id
-            }
-        });
+                userId: user.id,
+            },
+        })
 
-        let result;
+        let result
 
         if (existingChart) {
             result = await prisma.musicChart.update({
                 where: {
-                    userId: user.id
+                    userId: user.id,
                 },
                 data: {
                     chartData: optimizedChartData as any,
-                    updatedAt: new Date()
-                }
-            });
+                    updatedAt: new Date(),
+                },
+            })
         } else {
             result = await prisma.musicChart.create({
                 data: {
                     userId: user.id,
                     chartData: optimizedChartData as any,
-                    generatedAt: new Date()
-                }
-            });
+                    generatedAt: new Date(),
+                },
+            })
         }
 
-        return result;
+        return result
     } catch (error) {
-        console.error(`Error generating chart for user ${user.id}:`, error);
-        throw error;
+        console.error(`Error generating chart for user ${user.id}:`, error)
+        throw error
     }
 }

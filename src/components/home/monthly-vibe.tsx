@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import type { MusicChartData } from "@/types/spotify"
+import type { MusicChartData } from "@/types/lastfm"
 import { MUSIC_SIGNS } from "@/utils/constants"
 import Link from "next/link"
 import { Sun, Moon, ArrowRight } from "lucide-react"

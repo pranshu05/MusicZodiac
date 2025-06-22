@@ -1,14 +1,11 @@
 import type { User } from "@prisma/client"
-import { Music, Calendar, Settings } from "lucide-react"
-import Link from "next/link"
-import { ROUTES } from "@/utils/constants"
+import { Music, Calendar } from "lucide-react"
 
 interface ProfileCardProps {
     user: User & { musicChart?: any }
-    isOwnProfile: boolean
 }
 
-export function ProfileCard({ user, isOwnProfile }: ProfileCardProps) {
+export function ProfileCard({ user }: ProfileCardProps) {
     return (
         <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl border border-purple-500/20 overflow-hidden box-glow">
             <div className="h-32 bg-gradient-to-r from-purple-600 to-pink-500 relative">
@@ -21,7 +18,6 @@ export function ProfileCard({ user, isOwnProfile }: ProfileCardProps) {
                         )}
                     </div>
                 </div>
-                {isOwnProfile && (<div className="absolute top-4 right-4"><Link href={ROUTES.SETTINGS} className="p-2 rounded-full bg-purple-900/60 hover:bg-purple-800/60 transition-colors duration-300" aria-label="Settings"><Settings size={20} className="text-white" /></Link></div>)}
             </div>
             <div className="pt-20 pb-6 px-8">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -30,7 +26,7 @@ export function ProfileCard({ user, isOwnProfile }: ProfileCardProps) {
                         {user.username && <p className="text-purple-300">@{user.username}</p>}
                     </div>
                     <div className="flex gap-4 text-sm">
-                        <a href={`https://open.spotify.com/user/${user.id}`} target="_blank" className="flex items-center gap-1 text-purple-200"><Music size={16} className="text-pink-400" /><span>Spotify</span></a>
+                        <a href={`https://open.lastfm.com/user/${user.id}`} target="_blank" className="flex items-center gap-1 text-purple-200"><Music size={16} className="text-pink-400" /><span>Lastfm</span></a>
                         <div className="flex items-center gap-1 text-purple-200"><Calendar size={16} className="text-pink-400" /><span>Joined {new Date(user.createdAt).toLocaleDateString()}</span></div>
                     </div>
                 </div>

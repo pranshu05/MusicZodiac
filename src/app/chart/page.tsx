@@ -5,7 +5,7 @@ import { ChartDetails } from "@/components/chart/chart-details"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { ROUTES } from "@/utils/constants"
-import type { MusicChartData } from "@/types/spotify"
+import type { MusicChartData } from "@/types/lastfm"
 import { ShareButtons } from "@/components/profile/share-buttons"
 import { generateAndSaveChart } from "@/utils/generate-chart"
 

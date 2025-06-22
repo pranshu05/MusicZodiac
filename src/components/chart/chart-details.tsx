@@ -1,5 +1,5 @@
 "use client"
-import type { MusicChartData } from "@/types/spotify"
+import type { MusicChartData } from "@/types/lastfm"
 import { MUSIC_SIGNS, CHART_POSITIONS } from "@/utils/constants"
 import { Music, Star, Sparkles, Heart, Flame, CircleEllipsis, CircleDot, Orbit, Zap, Waves, CircleSlash, ChevronDown, ChevronUp, ExternalLink, } from "lucide-react"
 import { useState, useEffect } from "react"
@@ -130,7 +130,7 @@ export function ChartDetails({ chartData, username, selectedPosition, onPosition
                                                             <h4 className="text-sm font-medium text-purple-300 mb-3">Top Artists Influencing {username}'s {position.charAt(0).toUpperCase() + position.slice(1)}:</h4>
                                                             <div className="grid gap-3">
                                                                 {data.artists.map((artist) => (
-                                                                    <a href={`https://open.spotify.com/artist/${artist.id}`} target="_blank" rel="noopener noreferrer" key={artist.id} className="flex items-center gap-3 bg-purple-900/40 rounded-lg p-3 border border-purple-500/20 hover:border-purple-400/50 hover:bg-purple-800/40 transition-all duration-300 group">
+                                                                    <a href={`https://open.lastfm.com/artist/${artist.id}`} target="_blank" rel="noopener noreferrer" key={artist.id} className="flex items-center gap-3 bg-purple-900/40 rounded-lg p-3 border border-purple-500/20 hover:border-purple-400/50 hover:bg-purple-800/40 transition-all duration-300 group">
                                                                         {artist.image && artist.image.length > 0 ? (
                                                                             <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-transparent group-hover:border-purple-400 transition-all"><img src={artist.image} alt={artist.name} width={48} height={48} className="object-cover w-full h-full" /></div>
                                                                         ) : (
@@ -138,7 +138,7 @@ export function ChartDetails({ chartData, username, selectedPosition, onPosition
                                                                         )}
                                                                         <div className="flex-grow">
                                                                             <span className="text-white font-medium block">{artist.name}</span>
-                                                                            <span className="text-xs text-purple-300 flex items-center gap-1">View on Spotify <ExternalLink size={12} /></span>
+                                                                            <span className="text-xs text-purple-300 flex items-center gap-1">View on Lastfm <ExternalLink size={12} /></span>
                                                                         </div>
                                                                     </a>
                                                                 ))}

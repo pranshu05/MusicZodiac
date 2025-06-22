@@ -1,4 +1,4 @@
-export interface SpotifyArtist {
+export interface LastfmArtist {
     id: string
     name: string
     image?: string
@@ -6,7 +6,7 @@ export interface SpotifyArtist {
 
 export interface MusicSign {
     sign: string
-    artists: SpotifyArtist[]
+    artists: LastfmArtist[]
 }
 
 export interface MusicChartData {
@@ -18,10 +18,10 @@ export interface MusicChartData {
     [key: string]: MusicSign
 }
 
-export interface SpotifyTrack {
+export interface LastfmTrack {
     id: string
     name: string
-    artists: SpotifyArtist[]
+    artists: LastfmArtist[]
     album: {
         images: { url: string; height: number; width: number }[]
     }

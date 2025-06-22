@@ -5,7 +5,7 @@ import { Footer } from "@/components/layout/footer"
 
 export const metadata = {
     title: "Music Zodiac | Your Musical Astrology",
-    description: "Discover your music zodiac signs based on your Spotify listening habits",
+    description: "Discover your music zodiac signs based on your Lastfm listening habits",
 }
 
 export default function RootLayout({ children, }: { children: React.ReactNode }) {

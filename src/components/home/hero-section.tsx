@@ -1,4 +1,4 @@
-import { SpotifyLogin } from "@/components/auth/spotify-login"
+import { LastfmLogin } from "@/components/auth/lastfm-login"
 import { Music, Disc, Headphones, Star } from "lucide-react"
 
 export function HeroSection() {
@@ -7,8 +7,8 @@ export function HeroSection() {
             <div className="relative max-w-3xl mx-auto px-4">
                 <div className="mb-8 flex justify-center"><div className="w-24 h-24 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center box-glow-pink pulse"><Music size={48} className="text-white" /></div></div>
                 <h1 className="text-4xl md:text-6xl font-bold mb-6 text-glow-pink">Discover Your Music Zodiac</h1>
-                <p className="text-xl md:text-2xl mb-8 text-purple-200">Your Spotify listening habits reveal your cosmic musical identity</p>
-                <div className="mb-12"><SpotifyLogin className="scale-125" /></div>
+                <p className="text-xl md:text-2xl mb-8 text-purple-200">Your Lastfm listening habits reveal your cosmic musical identity</p>
+                <div className="mb-12"><LastfmLogin className="scale-125" /></div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {[
                         {

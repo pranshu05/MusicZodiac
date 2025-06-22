@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Music, User, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { SpotifyLogin } from "@/components/auth/spotify-login";
+import { LastfmLogin } from "@/components/auth/lastfm-login";
 import { ROUTES } from "@/utils/constants";
 
 export function Header() {
@@ -45,7 +45,7 @@ export function Header() {
                             </div>
                         </>
                     ) : (
-                        <SpotifyLogin />
+                        <LastfmLogin />
                     )}
                 </nav>
                 <button className="md:hidden text-white" onClick={toggleMenu} aria-label="Toggle menu">{menuOpen ? <X size={24} /> : <Menu size={24} />}</button>
@@ -64,7 +64,7 @@ export function Header() {
                             </>
                         ) : (
                             <div className="px-2 py-2">
-                                <SpotifyLogin className="w-full" />
+                                <LastfmLogin className="w-full" />
                             </div>
                         )}
                     </nav>

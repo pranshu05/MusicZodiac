@@ -1,7 +1,7 @@
 import { authOptions } from "@/utils/auth";
 import { getServerSession } from "next-auth";
 import { StarChart } from "@/components/chart/star-chart"
-import { SpotifyLogin } from "@/components/auth/spotify-login"
+import { LastfmLogin } from "@/components/auth/lastfm-login"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
 import { ROUTES } from "@/utils/constants"
@@ -45,8 +45,8 @@ export default async function Home() {
                     ) : (
                         <div className="text-center py-12">
                             <h2 className="text-2xl font-bold mb-4 text-glow">Generate Your Music Zodiac</h2>
-                            <p className="text-purple-200 mb-8">Connect with Spotify to analyze your listening habits and discover your unique music zodiac chart.</p>
-                            <SpotifyLogin />
+                            <p className="text-purple-200 mb-8">Connect with Lastfm to analyze your listening habits and discover your unique music zodiac chart.</p>
+                            <LastfmLogin />
                         </div>
                     )}
                 </div>

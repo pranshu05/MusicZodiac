@@ -1,19 +1,19 @@
 # Music Zodiac 🎵✨
 
-Music Zodiac is a web application that analyzes your Spotify listening habits and generates a personalized "music zodiac chart" - a cosmic representation of your musical taste and preferences.
+Music Zodiac is a web application that analyzes your Lastfm listening habits and generates a personalized "music zodiac chart" - a cosmic representation of your musical taste and preferences.
 
 ## ✨ Features
 
 - **Music Zodiac Chart**: Discover your musical identity through a personalized star chart based on your listening habits
 - **Monthly Vibes**: See how your music taste evolves over time
 - **Compatibility**: Compare your music taste with friends and discover your musical compatibility
-- **Spotify Integration**: Seamlessly connect with your Spotify account to analyze your listening history
+- **Lastfm Integration**: Seamlessly connect with your Lastfm account to analyze your listening history
 
 ## 🚀 Tech Stack
 
 - **Frontend**: Next.js, Tailwind CSS
 - **Backend**: Next.js API Routes
-- **Authentication**: NextAuth.js with Spotify OAuth
+- **Authentication**: NextAuth.js with Lastfm OAuth
 - **Database**: Prisma ORM with Neon
 
 ## 🔧 Getting Started
@@ -22,7 +22,7 @@ Music Zodiac is a web application that analyzes your Spotify listening habits an
 
 - Node.js (v16 or higher)
 - npm or yarn
-- Spotify Developer Account (for API credentials)
+- Lastfm Developer Account (for API credentials)
 
 ### Installation
 
@@ -44,8 +44,8 @@ Music Zodiac is a web application that analyzes your Spotify listening habits an
    DATABASE_URL="your-database-connection-string"
    NEXTAUTH_URL="http://localhost:3000"
    NEXTAUTH_SECRET="your-nextauth-secret"
-   SPOTIFY_CLIENT_ID="your-spotify-client-id"
-   SPOTIFY_CLIENT_SECRET="your-spotify-client-secret"
+   LASTFM_CLIENT_ID="your-lastfm-api-key"
+   LASTFM_CLIENT_SECRET="your-lastfm-api-secret"
    ```
 
 4. Run the development server
@@ -59,7 +59,7 @@ Music Zodiac is a web application that analyzes your Spotify listening habits an
 
 ## 🌌 How It Works
 
-Music Zodiac analyzes your Spotify listening history and maps different aspects of your music taste to celestial bodies:
+Music Zodiac analyzes your Lastfm listening history and maps different aspects of your music taste to celestial bodies:
 
 - **Sun**: Core musical identity and the genres that define your taste
 - **Moon**: Emotional connection to music and what creates deep feelings
@@ -85,6 +85,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## ✨ Acknowledgements
 
-- [Spotify Web API](https://developer.spotify.com/documentation/web-api/)
+- [Last.fm API Documentation](https://www.last.fm/api)
 - [NextAuth.js](https://next-auth.js.org/)
 - [Prisma](https://www.prisma.io/)

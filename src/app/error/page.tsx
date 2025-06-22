@@ -11,10 +11,10 @@ export default function ErrorPage() {
 
     switch (error) {
         case "AccessDenied":
-            errorMessage = "You denied access to your Spotify account. We need this to generate your music chart."
+            errorMessage = "You denied access to your Lastfm account. We need this to generate your music chart."
             break
         case "Callback":
-            errorMessage = "There was an issue with the Spotify authentication callback."
+            errorMessage = "There was an issue with the Lastfm authentication callback."
             break
         default:
             errorMessage = "An unexpected error occurred during authentication."

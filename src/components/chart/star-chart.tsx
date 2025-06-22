@@ -1,6 +1,6 @@
 "use client"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import type { MusicChartData } from "@/types/spotify"
+import type { MusicChartData } from "@/types/lastfm"
 import { MUSIC_SIGNS, CHART_POSITIONS } from "@/utils/constants"
 import { cn } from "@/utils/cn"
 import { Info, Orbit } from "lucide-react"

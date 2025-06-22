@@ -4,7 +4,7 @@ import { StarChart } from "@/components/chart/star-chart"
 import { ChartDetails } from "@/components/chart/chart-details"
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
-import type { MusicChartData } from "@/types/spotify"
+import { MusicChartData } from "@/types/lastfm"
 import { generateAndSaveChart } from "@/utils/generate-chart"
 import { ProfileCard } from "@/components/profile/profile-card"
 import { ShareButtons } from "@/components/profile/share-buttons"
@@ -66,7 +66,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     return (
         <div className="container mx-auto px-4 py-12 pb-24">
             <div className="max-w-7xl mx-auto">
-                <ProfileCard user={user} isOwnProfile={isOwnProfile} />
+                <ProfileCard user={user} />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mt-8">
                     <div className="lg:sticky lg:top-24">
                         <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-8 border border-purple-500/30 box-glow shadow-xl shadow-purple-900/20">

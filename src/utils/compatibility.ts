@@ -1,5 +1,5 @@
 import { MUSIC_SIGNS } from "@/utils/constants";
-import type { MusicChartData } from "@/types/spotify";
+import type { MusicChartData } from "@/types/lastfm";
 
 export const calculateCompatibility = (userChart: MusicChartData, otherChart: MusicChartData) => {
     const signMatches = Object.entries(userChart).filter(([position, data]) => otherChart[position as keyof MusicChartData]?.sign === data.sign).map(([position]) => position);

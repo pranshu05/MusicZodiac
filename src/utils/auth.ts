@@ -1,50 +1,172 @@
-import type { NextAuthOptions } from 'next-auth';
-import SpotifyProvider from 'next-auth/providers/spotify';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { prisma } from '@/lib/prisma';
+import type { NextAuthOptions } from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
+import { prisma } from "@/lib/prisma"
+import crypto from "crypto"
 
-interface SpotifyProfile {
-    id: string;
-    email: string;
-    name?: string;
-    display_name?: string;
-    images?: Array<{ url: string }>;
-    picture?: string;
-    avatar_url?: string;
+interface LastFmUser {
+    name: string
+    realname?: string
+    image?: Array<{ "#text": string; size: string }>
+    url?: string
 }
 
-const scopes = [
-    'user-read-email',
-    'user-read-private',
-    'user-top-read',
-    'user-read-recently-played',
-    'user-library-read',
-].join(' ');
+// Generate API signature for Last.fm
+function generateSignature(params: Record<string, string>, secret: string): string {
+    const sortedKeys = Object.keys(params).sort()
+    const paramString = sortedKeys.map((key) => `${key}${params[key]}`).join("")
+    return crypto
+        .createHash("md5")
+        .update(paramString + secret)
+        .digest("hex")
+}
+
+// Get Last.fm session key
+async function getLastFmSession(token: string): Promise<{ key: string; name: string } | null> {
+    const params = {
+        method: "auth.getSession",
+        api_key: process.env.LASTFM_CLIENT_ID!,
+        token: token,
+    }
+
+    const signature = generateSignature(params, process.env.LASTFM_CLIENT_SECRET!)
+
+    const url = new URL("https://ws.audioscrobbler.com/2.0/")
+    Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, value))
+    url.searchParams.append("api_sig", signature)
+    url.searchParams.append("format", "json")
+
+    console.log("Requesting Last.fm session with URL:", url.toString())
+
+    try {
+        const response = await fetch(url.toString())
+        const data = await response.json()
+
+        console.log("Last.fm session response:", data)
+
+        if (data.session) {
+            return {
+                key: data.session.key,
+                name: data.session.name,
+            }
+        }
+
+        if (data.error) {
+            console.error("Last.fm API error:", data.message)
+            throw new Error(`Last.fm API error: ${data.message}`)
+        }
+
+        return null
+    } catch (error) {
+        console.error("Error getting Last.fm session:", error)
+        throw error
+    }
+}
+
+// Get Last.fm user info
+async function getLastFmUser(username: string): Promise<LastFmUser | null> {
+    const params = {
+        method: "user.getInfo",
+        api_key: process.env.LASTFM_CLIENT_ID!,
+        user: username,
+    }
+
+    const url = new URL("https://ws.audioscrobbler.com/2.0/")
+    Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, value))
+    url.searchParams.append("format", "json")
+
+    try {
+        const response = await fetch(url.toString())
+        const data = await response.json()
+
+        console.log("Last.fm user info response:", data)
+
+        if (data.user) {
+            return data.user
+        }
+        return null
+    } catch (error) {
+        console.error("Error getting Last.fm user info:", error)
+        return null
+    }
+}
 
 export const authOptions: NextAuthOptions = {
-    adapter: PrismaAdapter(prisma),
     providers: [
-        SpotifyProvider({
-            clientId: process.env.SPOTIFY_CLIENT_ID!,
-            clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
-            authorization: { params: { scope: scopes }, },
+        CredentialsProvider({
+            id: "lastfm",
+            name: "Last.fm",
+            credentials: {
+                token: { label: "Token", type: "text" },
+            },
+            async authorize(credentials) {
+                console.log("=== Last.fm Authorization Started ===")
+                console.log("Token received:", credentials?.token)
+
+                if (!credentials?.token) {
+                    console.log("No token provided")
+                    throw new Error("No token provided")
+                }
+
+                try {
+                    console.log("Getting Last.fm session...")
+                    const session = await getLastFmSession(credentials.token)
+
+                    if (!session) {
+                        console.log("Failed to get Last.fm session")
+                        throw new Error("Failed to get Last.fm session")
+                    }
+
+                    console.log("Got Last.fm session:", session)
+
+                    console.log("Getting Last.fm user info...")
+                    const userInfo = await getLastFmUser(session.name)
+
+                    if (!userInfo) {
+                        console.log("Failed to get Last.fm user info")
+                        throw new Error("Failed to get Last.fm user info")
+                    }
+
+                    console.log("Got Last.fm user info:", userInfo)
+
+                    const imageUrl =
+                        userInfo.image?.find((img) => img.size === "large")?.["#text"] ||
+                        userInfo.image?.find((img) => img.size === "medium")?.["#text"] ||
+                        null
+
+                    const user = {
+                        id: session.name,
+                        name: userInfo.realname || userInfo.name,
+                        email: null,
+                        image: imageUrl,
+                        username: session.name,
+                        sessionKey: session.key,
+                    }
+
+                    console.log("=== Authorization Successful ===")
+                    console.log("Returning user:", user)
+                    return user
+                } catch (error) {
+                    console.error("=== Authorization Failed ===")
+                    console.error("Last.fm authorization error:", error)
+                    throw error
+                }
+            },
         }),
     ],
     callbacks: {
-        async jwt({ token, account, user }) {
-            if (account && user) {
-                token.accessToken = account.access_token;
-                token.refreshToken = account.refresh_token;
-                token.accessTokenExpires = account.expires_at ? account.expires_at * 1000 : 0;
+        async jwt({ token, user }) {
+            if (user) {
+                console.log("JWT callback - storing user data")
+                token.sessionKey = (user as any).sessionKey
                 token.user = {
                     id: user.id,
                     name: user.name,
                     email: user.email,
                     image: user.image,
-                    username: user.username,
-                };
+                    username: (user as any).username,
+                }
             }
-            return token;
+            return token
         },
 
         async session({ session, token }) {
@@ -53,110 +175,100 @@ export const authOptions: NextAuthOptions = {
                     ...session.user,
                     id: token.user.id,
                     username: token.user.username,
-                };
+                }
             }
-            session.accessToken = token.accessToken;
-            session.error = token.error;
-            return session;
+            session.sessionKey = token.sessionKey
+            return session
         },
 
-        async signIn({ profile, account }) {
-            if (!profile?.email || !account) return false;
+        async signIn({ user }) {
+            console.log("=== SignIn Callback Started ===")
+            console.log("User data:", user)
 
-            const spotifyProfile = profile as SpotifyProfile;
-            const imageUrl = spotifyProfile.images?.[0]?.url || spotifyProfile.picture || spotifyProfile.avatar_url || null;
-            const spotifyId = spotifyProfile.id;
+            if (!user.id) {
+                console.log("No user ID provided")
+                return false
+            }
 
             try {
-                let user = await prisma.user.findUnique({ where: { id: spotifyId } });
+                let existingUser = await prisma.user.findUnique({
+                    where: { id: user.id },
+                })
 
-                if (!user) {
-                    user = await prisma.user.create({
+                if (!existingUser) {
+                    console.log("Creating new user:", user.id)
+                    existingUser = await prisma.user.create({
                         data: {
-                            id: spotifyId,
-                            email: spotifyProfile.email,
-                            name: spotifyProfile.name || spotifyProfile.display_name || 'Spotify User',
-                            image: imageUrl,
-                            username: `user_${Math.random().toString(36).substring(2, 10)}`,
+                            id: user.id,
+                            name: user.name,
+                            image: user.image,
+                            username: (user as any).username,
                             accounts: {
                                 create: {
-                                    id: spotifyId,
-                                    type: account.type,
-                                    provider: account.provider,
-                                    providerAccountId: account.providerAccountId,
-                                    refresh_token: account.refresh_token,
-                                    access_token: account.access_token,
-                                    expires_at: account.expires_at,
-                                    token_type: account.token_type,
-                                    scope: account.scope,
+                                    type: "oauth",
+                                    provider: "lastfm",
+                                    providerAccountId: user.id,
+                                    access_token: (user as any).sessionKey,
                                 },
                             },
                         },
-                    });
+                    })
+                    console.log("Created user:", existingUser)
                 } else {
+                    console.log("Updating existing user:", user.id)
                     await prisma.user.update({
-                        where: { id: spotifyId },
+                        where: { id: user.id },
                         data: {
-                            email: spotifyProfile.email,
-                            name: spotifyProfile.name || spotifyProfile.display_name || user.name,
-                            image: imageUrl || user.image,
+                            name: user.name || existingUser.name,
+                            image: user.image || existingUser.image,
                         },
-                    });
+                    })
 
-                    const existingAccount = await prisma.account.findUnique({
-                        where: { id: spotifyId },
-                    });
+                    const existingAccount = await prisma.account.findFirst({
+                        where: {
+                            userId: user.id,
+                            provider: "lastfm",
+                        },
+                    })
 
                     if (!existingAccount) {
+                        console.log("Creating new account for existing user")
                         await prisma.account.create({
                             data: {
-                                id: spotifyId,
-                                type: account.type,
-                                provider: account.provider,
-                                providerAccountId: account.providerAccountId,
-                                refresh_token: account.refresh_token,
-                                access_token: account.access_token,
-                                expires_at: account.expires_at,
-                                token_type: account.token_type,
-                                scope: account.scope,
-                                user: { connect: { id: spotifyId }, },
+                                type: "oauth",
+                                provider: "lastfm",
+                                providerAccountId: user.id,
+                                access_token: (user as any).sessionKey,
+                                userId: user.id,
                             },
-                        });
+                        })
                     } else {
+                        console.log("Updating existing account")
                         await prisma.account.update({
-                            where: { id: spotifyId },
+                            where: { id: existingAccount.id },
                             data: {
-                                refresh_token: account.refresh_token,
-                                access_token: account.access_token,
-                                expires_at: account.expires_at,
-                                token_type: account.token_type,
-                                scope: account.scope,
+                                access_token: (user as any).sessionKey,
                             },
-                        });
+                        })
                     }
                 }
 
-                if (!user.username) {
-                    await prisma.user.update({
-                        where: { id: spotifyId },
-                        data: { username: `user_${Math.random().toString(36).substring(2, 10)}`, },
-                    });
-                }
-
-                return true;
+                console.log("=== SignIn Callback Successful ===")
+                return true
             } catch (error) {
-                console.error('Sign-in error:', error);
-                return false;
+                console.error("=== SignIn Callback Failed ===")
+                console.error("Sign-in error:", error)
+                return false
             }
         },
     },
     pages: {
-        signIn: '/',
-        error: '/error',
+        signIn: "/",
+        error: "/error",
     },
     session: {
-        strategy: 'jwt',
+        strategy: "jwt",
     },
     secret: process.env.NEXTAUTH_SECRET,
-    debug: process.env.NODE_ENV === 'development',
-};
+    debug: process.env.NODE_ENV === "development",
+}
