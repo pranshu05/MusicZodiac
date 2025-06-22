@@ -5,11 +5,7 @@ CREATE TABLE "Account" (
     "type" TEXT NOT NULL,
     "provider" TEXT NOT NULL,
     "providerAccountId" TEXT NOT NULL,
-    "refresh_token" TEXT,
     "access_token" TEXT,
-    "expires_at" INTEGER,
-    "token_type" TEXT,
-    "scope" TEXT,
 
     CONSTRAINT "Account_pkey" PRIMARY KEY ("id")
 );
@@ -18,11 +14,9 @@ CREATE TABLE "Account" (
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "name" TEXT,
-    "email" TEXT,
     "image" TEXT,
     "username" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -54,13 +48,10 @@ CREATE TABLE "Friend" (
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_username_key" ON "User"("email", "username");
+CREATE UNIQUE INDEX "User_id_username_key" ON "User"("id", "username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "MusicChart_userId_key" ON "MusicChart"("userId");

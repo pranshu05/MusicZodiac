@@ -3,7 +3,7 @@ import { useState } from "react"
 import type { MusicChartData } from "@/types/lastfm"
 import { MUSIC_SIGNS } from "@/utils/constants"
 import Link from "next/link"
-import { Sun, Moon, ArrowRight } from "lucide-react"
+import { Sun, Moon } from "lucide-react"
 
 interface MonthlyVibeProps {
     chartData: MusicChartData

@@ -46,8 +46,7 @@ function optimizeChartData(fullChartData: any): OptimizedChartData {
         })
 
         return optimizedData
-    } catch (error) {
-        console.error("Error optimizing chart data:", error)
+    } catch {
         return {}
     }
 }
@@ -69,10 +68,9 @@ export async function generateAndSaveChart(user: User) {
             throw new Error("Last.fm account or session key not found")
         }
 
-        const sessionKey = account.access_token
         const username = user.username || user.id
 
-        const fullChartData = await getLastFmData(sessionKey, username)
+        const fullChartData = await getLastFmData( username)
 
         if (!fullChartData) {
             throw new Error("Failed to generate chart data")
@@ -110,7 +108,6 @@ export async function generateAndSaveChart(user: User) {
 
         return result
     } catch (error) {
-        console.error(`Error generating chart for user ${user.id}:`, error)
         throw error
     }
 }

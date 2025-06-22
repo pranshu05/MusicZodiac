@@ -22,9 +22,7 @@ export interface LastfmTrack {
     id: string
     name: string
     artists: LastfmArtist[]
-    album: {
-        images: { url: string; height: number; width: number }[]
-    }
+    album: { images: { url: string; height: number; width: number }[] }
 }
 
 export interface AudioFeatures {
