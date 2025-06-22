@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link"
 import { Github } from "lucide-react"
+import { FaProductHunt } from "react-icons/fa";
 import { ROUTES } from "@/utils/constants"
 
 export function Footer() {
@@ -13,7 +14,8 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="md:col-span-1">
                         <h3 className="text-lg font-semibold text-white uppercase tracking-wider mb-3">Music Zodiac</h3>
-                        <p className="text-sm text-purple-300">Discover your musical identity through cosmic connections and celestial harmonies.</p>
+                        <p className="text-sm text-purple-300 mb-6">Discover your musical identity through cosmic connections and celestial harmonies.</p>
+                        <a href="https://www.producthunt.com/products/music-zodiac?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-music&#0045;zodiac" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=981960&theme=dark&t=1750612135378" alt="Music&#0032;Zodiac - Your&#0032;musical&#0032;astrology | Product Hunt" width="250" height="54" /></a>
                     </div>
                     {session && (
                         <>
@@ -36,8 +38,9 @@ export function Footer() {
                     )}
                     <div className="md:col-span-1">
                         <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-3">Connect</h3>
-                        <div className="flex space-x-4">
-                            <Link href="https://github.com/pranshu05/MusicZodiac" target="_blank" rel="noopener noreferrer" className="text-purple-300 hover:text-white transition-colors"><Github className="h-5 w-5" /><span className="sr-only">GitHub</span></Link>
+                        <div className="flex space-x-2">
+                            <Link href="https://github.com/pranshu05/MusicZodiac" target="_blank" rel="noopener noreferrer" className="text-purple-300 hover:text-white transition-colors"><Github className="h-5 w-5" /></Link>
+                            <Link href="https://producthunt.com/products/music-zodiac" target="_blank" rel="noopener noreferrer" className="text-purple-300 hover:text-white transition-colors"><FaProductHunt className="h-5 w-5" /></Link>
                         </div>
                     </div>
                 </div>

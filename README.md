@@ -2,6 +2,8 @@
 
 Music Zodiac is a web application that analyzes your Lastfm listening habits and generates a personalized "music zodiac chart" - a cosmic representation of your musical taste and preferences.
 
+<a href="https://www.producthunt.com/products/music-zodiac?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-music&#0045;zodiac" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=981960&theme=dark&t=1750612135378" alt="Music&#0032;Zodiac - Your&#0032;musical&#0032;astrology | Product Hunt" width="250" height="54" /></a>
+
 ## ✨ Features
 
 - **Music Zodiac Chart**: Discover your musical identity through a personalized star chart based on your listening habits

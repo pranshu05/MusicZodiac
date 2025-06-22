@@ -1,33 +1,20 @@
 "use client"
 import Link from "next/link"
 import { useState } from "react"
-import { UserPlus } from "lucide-react"
+import { useSession } from "next-auth/react"
 import type { User } from "@prisma/client"
+import { AddFriendButton } from "@/components/friends/add-friend-button"
 
 interface FindFriendsProps {
     potentialFriends: User[]
 }
 
 export function FindFriends({ potentialFriends }: FindFriendsProps) {
-    const [friends, setFriends] = useState(potentialFriends)
-    const [sentRequests, setSentRequests] = useState<string[]>([])
+    const { data: session } = useSession()
+    const [friends] = useState(potentialFriends)
 
-    const handleSendRequest = async (userId: string) => {
-        try {
-            const response = await fetch(`/api/friends/request`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ friendId: userId }),
-            })
-
-            if (response.ok) {
-                setSentRequests([...sentRequests, userId])
-            }
-        } catch {
-            throw new Error("Failed to send friend request")
-        }
+    if (!session?.user?.id) {
+        return null
     }
 
     return (
@@ -37,7 +24,7 @@ export function FindFriends({ potentialFriends }: FindFriendsProps) {
                 <div className="space-y-4">
                     {friends.map((user) => (
                         <div key={user.id} className="flex items-center justify-between p-3 bg-purple-900/30 rounded-lg border border-purple-500/20 hover:border-purple-500/40 transition-all">
-                            <Link href={`/profile/${user.username || user.id}`} className="flex items-center gap-3">
+                            <Link href={`/profile/${user.username || user.id}`} className="flex items-center gap-3 flex-grow">
                                 <div className="w-10 h-10 rounded-full overflow-hidden">
                                     {user.image ? (
                                         <img src={user.image} alt={user.name || "User"} width={40} height={40} className="object-cover w-full h-full" />
@@ -47,7 +34,7 @@ export function FindFriends({ potentialFriends }: FindFriendsProps) {
                                 </div>
                                 <span className="font-medium text-white">{user.name || user.username || "Music Lover"}</span>
                             </Link>
-                            <button onClick={() => handleSendRequest(user.id)} disabled={sentRequests.includes(user.id)} className={`p-2 rounded-full transition-colors ${sentRequests.includes(user.id) ? "bg-purple-900/30 text-purple-400" : "bg-purple-800/50 hover:bg-purple-700/50 text-pink-300"}`} aria-label="Add friend"><UserPlus size={18} /></button>
+                            <AddFriendButton targetUserId={user.id} currentUserId={session.user.id} className="ml-2" />
                         </div>
                     ))}
                 </div>

@@ -34,8 +34,8 @@ export default async function CompatibilityPage() {
             userChart = await prisma.musicChart.findUnique({
                 where: { userId: session.user.id }
             })
-        } catch (error) {
-            console.error("Failed to generate chart:", error)
+        } catch {
+            throw new Error("Failed to generate or retrieve user chart")
         }
     }
 

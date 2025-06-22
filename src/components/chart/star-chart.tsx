@@ -1,5 +1,4 @@
 "use client"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import type { MusicChartData } from "@/types/lastfm"
 import { MUSIC_SIGNS, CHART_POSITIONS } from "@/utils/constants"
 import { cn } from "@/utils/cn"
@@ -14,7 +13,7 @@ interface StarChartProps {
     selectedPosition?: string | null
 }
 
-export function StarChart({ chartData, className, onPositionSelect, selectedPosition }: StarChartProps) {
+export function StarChart({ chartData, className }: StarChartProps) {
     const svgRef = useRef<SVGSVGElement>(null)
     const [dimensions, setDimensions] = useState({ width: 300, height: 300 })
     const [isMounted, setIsMounted] = useState(false)
@@ -126,12 +125,6 @@ export function StarChart({ chartData, className, onPositionSelect, selectedPosi
         return `${position}-${sign.toLowerCase().replace(/\s+/g, "-")}-gradient`
     }, [])
 
-    const handlePositionClick = (position: string) => {
-        if (onPositionSelect) {
-            onPositionSelect(position)
-        }
-    }
-
     if (!isMounted) {
         return (
             <div className={cn("relative w-full", className)}>
@@ -152,82 +145,58 @@ export function StarChart({ chartData, className, onPositionSelect, selectedPosi
     }
 
     return (
-        <TooltipProvider>
-            <div className={cn("relative w-full", className)}>
-                <svg ref={svgRef} viewBox={`0 0 ${dimensions.width} ${dimensions.height}`} className="w-full h-auto" aria-label="Music Zodiac Star Chart">
-                    <defs>
-                        <radialGradient id="bg-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                            <stop offset="0%" stopColor="#9900ff" stopOpacity="0.2" />
-                            <stop offset="100%" stopColor="#1a0044" stopOpacity="0.8" />
+        <div className={cn("relative w-full", className)}>
+            <svg ref={svgRef} viewBox={`0 0 ${dimensions.width} ${dimensions.height}`} className="w-full h-auto" aria-label="Music Zodiac Star Chart">
+                <defs>
+                    <radialGradient id="bg-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                        <stop offset="0%" stopColor="#9900ff" stopOpacity="0.2" />
+                        <stop offset="100%" stopColor="#1a0044" stopOpacity="0.8" />
+                    </radialGradient>
+                    {Object.entries(chartData).map(([position, data]) => (
+                        <radialGradient key={`gradient-${position}`} id={getSignGradientId(position, data.sign)} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                            <stop offset="0%" stopColor={getSignColor(data.sign)} stopOpacity="0.8" />
+                            <stop offset="100%" stopColor={getSignColor(data.sign)} stopOpacity="0.3" />
                         </radialGradient>
-                        {Object.entries(chartData).map(([position, data]) => (
-                            <radialGradient key={`gradient-${position}`} id={getSignGradientId(position, data.sign)} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                                <stop offset="0%" stopColor={getSignColor(data.sign)} stopOpacity="0.8" />
-                                <stop offset="100%" stopColor={getSignColor(data.sign)} stopOpacity="0.3" />
-                            </radialGradient>
-                        ))}
-                        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="10" result="blur" />
-                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                        </filter>
-                        <filter id="glow-intense" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="4" result="blur" />
-                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                        </filter>
-                        <filter id="star-glow" x="-100%" y="-100%" width="300%" height="300%">
-                            <feGaussianBlur stdDeviation="2" result="blur" />
-                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                        </filter>
-                    </defs>
-                    <circle cx={centerX} cy={centerY} r={radius * 1.1} fill="none" stroke="#6B46C1" strokeWidth="1" strokeOpacity="0.1" />
-                    <circle cx={centerX} cy={centerY} r={radius * 0.9} fill="none" stroke="#ff00ff" strokeWidth="1" strokeOpacity="0.1" />
-                    <circle cx={centerX} cy={centerY} r={radius} fill="url(#bg-gradient)" stroke="url(#bg-gradient)" strokeWidth="2" />
-                    <g className="constellation-lines" strokeOpacity="0.3" strokeWidth="1">
-                        {Object.entries(positions).flatMap(([pos1, data1], index) => Object.entries(positions).slice(index + 1).map(([pos2, data2]) => (<line key={`${pos1}-${pos2}`} x1={data1.x} y1={data1.y} x2={data2.x} y2={data2.y} stroke="#ff00ff" strokeDasharray="5,5" />)))}
-                    </g>
-                    {Object.entries(positions).map(([position, pos]) => {
-                        const positionKey = position as keyof typeof CHART_POSITIONS
-                        const signData = chartData[positionKey]
-                        if (!signData) return null
+                    ))}
+                    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="10" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                    <filter id="glow-intense" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="4" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                    <filter id="star-glow" x="-100%" y="-100%" width="300%" height="300%">
+                        <feGaussianBlur stdDeviation="2" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                </defs>
+                <circle cx={centerX} cy={centerY} r={radius * 1.1} fill="none" stroke="#6B46C1" strokeWidth="1" strokeOpacity="0.1" />
+                <circle cx={centerX} cy={centerY} r={radius * 0.9} fill="none" stroke="#ff00ff" strokeWidth="1" strokeOpacity="0.1" />
+                <circle cx={centerX} cy={centerY} r={radius} fill="url(#bg-gradient)" stroke="url(#bg-gradient)" strokeWidth="2" />
+                <g className="constellation-lines" strokeOpacity="0.3" strokeWidth="1">
+                    {Object.entries(positions).flatMap(([pos1, data1], index) => Object.entries(positions).slice(index + 1).map(([pos2, data2]) => (<line key={`${pos1}-${pos2}`} x1={data1.x} y1={data1.y} x2={data2.x} y2={data2.y} stroke="#ff00ff" strokeDasharray="5,5" />)))}
+                </g>
+                {Object.entries(positions).map(([position, pos]) => {
+                    const positionKey = position as keyof typeof CHART_POSITIONS
+                    const signData = chartData[positionKey]
+                    if (!signData) return null
 
-                        const gradientId = getSignGradientId(position, signData.sign)
-                        const isSelected = selectedPosition === position
-                        const isHovered = hoveredPosition === position
-                        const isActive = isSelected || isHovered
+                    const gradientId = getSignGradientId(position, signData.sign)
+                    const isHovered = hoveredPosition === position
+                    const isActive = isHovered
 
-                        return (
-                            <Tooltip key={position}>
-                                <TooltipTrigger asChild>
-                                    <g className={`transition-all duration-300 cursor-pointer`} onClick={() => handlePositionClick(position)} onMouseEnter={() => setHoveredPosition(position)} onMouseLeave={() => setHoveredPosition(null)}>
-                                        <circle cx={centerX} cy={centerY} r={Math.sqrt(Math.pow(pos.x - centerX, 2) + Math.pow(pos.y - centerY, 2))} fill="none" stroke={getSignColor(signData.sign)} strokeWidth={isActive ? "2" : "1"} strokeOpacity={isActive ? "0.6" : "0.2"} strokeDasharray={isActive ? "5,3" : "3,3"} />
-                                        {isActive && (<circle cx={pos.x} cy={pos.y} r={pos.radius * 2} fill={`url(#${gradientId})`} opacity="0.3" filter="url(#glow)" />)}
-                                        <circle cx={pos.x} cy={pos.y} r={pos.radius * (isActive ? 1.2 : 1)} fill={`url(#${gradientId})`} opacity={isActive ? "0.7" : "0.5"} filter={isActive ? "url(#glow-intense)" : ""} />
-                                        <circle cx={pos.x} cy={pos.y} r={pos.radius * (isActive ? 1.2 : 1)} fill={`url(#${gradientId})`} stroke={getSignColor(signData.sign)} strokeWidth={isActive ? "1.2" : "1"} className={isActive ? "animate-pulse-slow" : ""} />
-                                        <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={pos.radius * (isActive ? 1 : 0.8)} fontWeight="bold">{position.charAt(0).toUpperCase()}</text>
-                                    </g>
-                                </TooltipTrigger>
-                                <TooltipContent side="top" className="bg-gradient-to-br from-purple-900 to-fuchsia-900 border-purple-500/50 text-white p-3">
-                                    <p className="font-bold">{position.charAt(0).toUpperCase() + position.slice(1)} in {signData.sign}</p>
-                                    <p className="text-xs text-purple-200 mt-1">{CHART_POSITIONS[positionKey]}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        )
-                    })}
-                </svg>
-                <div className="mt-6 grid grid-cols-3 md:grid-cols-6 gap-2 text-center">
-                    {Object.entries(positions)
-                        .slice(0, 6)
-                        .map(([position]) => {
-                            const positionKey = position as keyof typeof CHART_POSITIONS
-                            const signData = chartData[positionKey]
-                            if (!signData) return null
-
-                            return (
-                                <button key={position} onClick={() => handlePositionClick(position)} className={cn("px-2 py-1 rounded-full text-xs font-medium transition-all", selectedPosition === position ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white" : "bg-purple-900/40 text-purple-200 hover:bg-purple-800/60 hover:text-white",)}>{position.charAt(0).toUpperCase() + position.slice(1)}</button>
-                            )
-                        })}
-                </div>
-            </div>
-        </TooltipProvider>
+                    return (
+                        <g key={position} onMouseEnter={() => setHoveredPosition(position)} onMouseLeave={() => setHoveredPosition(null)}>
+                            <circle cx={centerX} cy={centerY} r={Math.sqrt(Math.pow(pos.x - centerX, 2) + Math.pow(pos.y - centerY, 2))} fill="none" stroke={getSignColor(signData.sign)} strokeWidth={isActive ? "2" : "1"} strokeOpacity={isActive ? "0.6" : "0.2"} strokeDasharray={isActive ? "5,3" : "3,3"} />
+                            {isActive && (<circle cx={pos.x} cy={pos.y} r={pos.radius * 2} fill={`url(#${gradientId})`} opacity="0.3" filter="url(#glow)" />)}
+                            <circle cx={pos.x} cy={pos.y} r={pos.radius * (isActive ? 1.2 : 1)} fill={`url(#${gradientId})`} opacity={isActive ? "0.7" : "0.5"} filter={isActive ? "url(#glow-intense)" : ""} />
+                            <circle cx={pos.x} cy={pos.y} r={pos.radius * (isActive ? 1.2 : 1)} fill={`url(#${gradientId})`} stroke={getSignColor(signData.sign)} strokeWidth={isActive ? "1.2" : "1"} className={isActive ? "animate-pulse-slow" : ""} />
+                            <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={pos.radius * (isActive ? 1 : 0.8)} fontWeight="bold">{position.charAt(0).toUpperCase()}</text>
+                        </g>
+                    )
+                })}
+            </svg>
+        </div>
     )
 }
