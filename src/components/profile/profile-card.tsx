@@ -26,7 +26,7 @@ export function ProfileCard({ user }: ProfileCardProps) {
                         {user.username && <p className="text-purple-300">@{user.username}</p>}
                     </div>
                     <div className="flex gap-4 text-sm">
-                        <a href={`https://open.lastfm.com/user/${user.id}`} target="_blank" className="flex items-center gap-1 text-purple-200"><Music size={16} className="text-pink-400" /><span>Lastfm</span></a>
+                        <a href={`https://last.fm/user/${user.id}`} target="_blank" className="flex items-center gap-1 text-purple-200"><Music size={16} className="text-pink-400" /><span>Lastfm</span></a>
                         <div className="flex items-center gap-1 text-purple-200"><Calendar size={16} className="text-pink-400" /><span>Joined {new Date(user.createdAt).toLocaleDateString()}</span></div>
                     </div>
                 </div>
