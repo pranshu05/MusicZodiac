@@ -75,13 +75,13 @@ export function MonthlyVibe({ chartData }: MonthlyVibeProps) {
                     </div>
                 ) : (
                     <div className="space-y-6">
-                        <h2 className="text-2xl font-bold text-glow-pink">Musical Compatibility</h2>
-                        <p className="text-purple-200">Based on your music chart, find users with the highest compatibility with your taste!</p>
-                        <div className="flex justify-center py-4"><Link href="/compatibility" className="neon-button">Find Your Music Soulmates</Link></div>
+                        <h2 className="text-2xl font-bold text-glow-pink">Friends Musical Compatibility</h2>
+                        <p className="text-purple-200">Discover how your music chart aligns with your friends' cosmic musical identities!</p>
+                        <div className="flex justify-center py-4"><Link href="/compatibility" className="neon-button">Check Friends Compatibility</Link></div>
                         <div className="bg-gradient-to-r from-purple-800/30 to-fuchsia-800/30 rounded-lg p-4 border border-purple-500/20">
                             <div className="flex items-center mb-2">
                                 <Moon size={18} className="text-blue-300 mr-2" />
-                                <h4 className="font-bold text-blue-200">Perfect Matches:</h4>
+                                <h4 className="font-bold text-blue-200">Friend Matches:</h4>
                             </div>
                             <p className="text-purple-200 text-sm">Your {chartData.sun.sign} Sun harmonizes well with Jazz and Classical listeners, while your{" "} {chartData.moon?.sign} Moon creates deep connections with {chartData.moon?.sign} enthusiasts.</p>
                         </div>

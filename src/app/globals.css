@@ -152,7 +152,6 @@
         animation: glitch 0.5s linear 0.1s infinite alternate;
     }
 
-    /* Neon button */
     .neon-button {
         position: relative;
         display: inline-block;

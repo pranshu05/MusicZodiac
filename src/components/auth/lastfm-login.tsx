@@ -16,21 +16,14 @@ export function LastfmLogin({ className = "" }: LastFmLoginProps) {
             const callbackUrl = `${window.location.origin}/api/auth/lastfm/callback`
             const lastFmAuthUrl = `https://www.last.fm/api/auth/?api_key=${process.env.LASTFM_CLIENT_ID}&cb=${encodeURIComponent(callbackUrl)}`
 
-            console.log("Redirecting to Last.fm:", lastFmAuthUrl)
-
             window.location.href = lastFmAuthUrl
-        } catch (error) {
-            console.error("Login error:", error)
+        } catch {
             setIsLoading(false)
         }
     }
 
     return (
-        <button
-            onClick={handleLogin}
-            disabled={isLoading}
-            className={`neon-button group relative overflow-hidden ${className}`}
-        >
+        <button onClick={handleLogin} disabled={isLoading} className={`neon-button group relative overflow-hidden ${className}`}>
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#d51007] to-[#ff1a0e] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></div>
             <div className="relative z-10 flex items-center justify-center gap-2">
                 {isLoading ? (

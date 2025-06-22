@@ -25,8 +25,8 @@ export function FindFriends({ potentialFriends }: FindFriendsProps) {
             if (response.ok) {
                 setSentRequests([...sentRequests, userId])
             }
-        } catch (error) {
-            console.error("Error sending friend request:", error)
+        } catch {
+            throw new Error("Failed to send friend request")
         }
     }
 

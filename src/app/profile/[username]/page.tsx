@@ -2,12 +2,14 @@ import { authOptions } from "@/utils/auth"
 import { getServerSession } from "next-auth"
 import { StarChart } from "@/components/chart/star-chart"
 import { ChartDetails } from "@/components/chart/chart-details"
+import { InsufficientDataError as InsufficientDataErrorComponent } from "@/components/chart/insufficient-data-error"
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { MusicChartData } from "@/types/lastfm"
 import { generateAndSaveChart } from "@/utils/generate-chart"
 import { ProfileCard } from "@/components/profile/profile-card"
 import { ShareButtons } from "@/components/profile/share-buttons"
+import { InsufficientDataError } from "@/lib/lastfm"
 
 interface ProfilePageProps {
     params: {
@@ -22,9 +24,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
     const user = await prisma.user.findFirst({
         where: { username },
-        include: {
-            musicChart: true,
-        },
+        include: { musicChart: true },
     })
 
     if (!user) {
@@ -36,6 +36,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             userId: user.id,
         },
     })
+
+    let insufficientDataDetails = null
 
     if (!userChart) {
         try {
@@ -52,8 +54,18 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                 where: { userId: user.id },
             })
         } catch (error) {
-            console.error("Failed to generate chart:", error)
+            if (error instanceof InsufficientDataError) {
+                insufficientDataDetails = error.details
+            }
         }
+    }
+
+    if (insufficientDataDetails) {
+        return (
+            <div className="container mx-auto px-4 py-12 pb-24">
+                <InsufficientDataErrorComponent details={insufficientDataDetails} />
+            </div>
+        )
     }
 
     if (!userChart) {

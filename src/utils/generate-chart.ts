@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import { getLastFmData } from "@/lib/lastfm"
+import { getLastFmData, InsufficientDataError } from "@/lib/lastfm"
 import type { User } from "@prisma/client"
 
 type OptimizedArtist = {
@@ -70,43 +70,50 @@ export async function generateAndSaveChart(user: User) {
 
         const username = user.username || user.id
 
-        const fullChartData = await getLastFmData( username)
+        try {
+            const fullChartData = await getLastFmData(username)
 
-        if (!fullChartData) {
-            throw new Error("Failed to generate chart data")
-        }
+            if (!fullChartData) {
+                throw new Error("Failed to generate chart data")
+            }
 
-        const optimizedChartData = optimizeChartData(fullChartData)
+            const optimizedChartData = optimizeChartData(fullChartData)
 
-        const existingChart = await prisma.musicChart.findUnique({
-            where: {
-                userId: user.id,
-            },
-        })
-
-        let result
-
-        if (existingChart) {
-            result = await prisma.musicChart.update({
+            const existingChart = await prisma.musicChart.findUnique({
                 where: {
                     userId: user.id,
                 },
-                data: {
-                    chartData: optimizedChartData as any,
-                    updatedAt: new Date(),
-                },
             })
-        } else {
-            result = await prisma.musicChart.create({
-                data: {
-                    userId: user.id,
-                    chartData: optimizedChartData as any,
-                    generatedAt: new Date(),
-                },
-            })
-        }
 
-        return result
+            let result
+
+            if (existingChart) {
+                result = await prisma.musicChart.update({
+                    where: {
+                        userId: user.id,
+                    },
+                    data: {
+                        chartData: optimizedChartData as any,
+                        updatedAt: new Date(),
+                    },
+                })
+            } else {
+                result = await prisma.musicChart.create({
+                    data: {
+                        userId: user.id,
+                        chartData: optimizedChartData as any,
+                        generatedAt: new Date(),
+                    },
+                })
+            }
+
+            return result
+        } catch (error) {
+            if (error instanceof InsufficientDataError) {
+                throw new InsufficientDataError(error.message, error.details)
+            }
+            throw error
+        }
     } catch (error) {
         throw error
     }

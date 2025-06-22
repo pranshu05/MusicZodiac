@@ -39,8 +39,7 @@ export async function POST(req: NextRequest) {
         })
 
         return NextResponse.json({ success: true, friendRequest })
-    } catch (error) {
-        console.error("Error sending friend request:", error)
+    } catch {
         return NextResponse.json({ error: "Failed to send friend request" }, { status: 500 })
     }
 }

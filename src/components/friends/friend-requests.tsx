@@ -27,8 +27,8 @@ export function FriendRequests({ requests }: FriendRequestsProps) {
             if (response.ok) {
                 setPendingRequests(pendingRequests.filter((req) => req.id !== requestId))
             }
-        } catch (error) {
-            console.error("Error accepting friend request:", error)
+        } catch {
+            throw new Error("Failed to accept friend request")
         }
     }
 
@@ -45,8 +45,8 @@ export function FriendRequests({ requests }: FriendRequestsProps) {
             if (response.ok) {
                 setPendingRequests(pendingRequests.filter((req) => req.id !== requestId))
             }
-        } catch (error) {
-            console.error("Error rejecting friend request:", error)
+        } catch {
+            throw new Error("Failed to reject friend request")
         }
     }
 

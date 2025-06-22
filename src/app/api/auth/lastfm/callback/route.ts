@@ -5,7 +5,6 @@ export async function GET(request: NextRequest) {
     const token = searchParams.get("token")
 
     if (!token) {
-        console.log("No token received in callback")
         return NextResponse.redirect(new URL("/error?error=NoToken", request.url))
     }
 
@@ -15,7 +14,6 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.redirect(signinUrl)
     } catch (error) {
-        console.error("Last.fm callback error:", error)
         return NextResponse.redirect(new URL("/error?error=CallbackError", request.url))
     }
 }

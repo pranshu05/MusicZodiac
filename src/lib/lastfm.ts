@@ -1,6 +1,10 @@
 import type { MusicChartData } from "@/types/lastfm"
 
-async function getTopArtists(username: string, period = "1month") {
+const MIN_ARTISTS_REQUIRED = 5
+const MIN_TRACKS_REQUIRED = 10
+const MIN_GENRES_REQUIRED = 3
+
+async function getTopArtists(username: string, period = "3month") {
     try {
         const params = {
             method: "user.getTopArtists",
@@ -284,10 +288,31 @@ function assignPositionsAstrologically(genreGroups: Record<string, any[]>): Musi
     return chartData
 }
 
+export class InsufficientDataError extends Error {
+    constructor(
+        message: string,
+        public details: { artists: number; tracks: number; genres: number },
+    ) {
+        super(message)
+        this.name = "InsufficientDataError"
+    }
+}
+
 export async function getLastFmData(username: string): Promise<MusicChartData | null> {
     try {
         const topArtists = await getTopArtists(username, "1month")
         const topTracks = await getTopTracks(username, "1month")
+
+        if (topArtists.length < MIN_ARTISTS_REQUIRED && topTracks.length < MIN_TRACKS_REQUIRED) {
+            throw new InsufficientDataError(
+                "Not enough listening data available to generate a meaningful music chart. Please listen to more music on Last.fm and try again.",
+                {
+                    artists: topArtists.length,
+                    tracks: topTracks.length,
+                    genres: 0,
+                },
+            )
+        }
 
         const trackArtists = topTracks.map((track: any) => ({
             name: track.artist?.name || track.artist,
@@ -297,15 +322,51 @@ export async function getLastFmData(username: string): Promise<MusicChartData | 
 
         const allArtists = mergeUniqueArtists(topArtists, trackArtists)
 
-        if (allArtists.length === 0) {
-            return null
+        if (allArtists.length < MIN_ARTISTS_REQUIRED) {
+            throw new InsufficientDataError(
+                "Not enough unique artists in your listening history to generate a comprehensive music chart. Please listen to more diverse music and try again.",
+                {
+                    artists: allArtists.length,
+                    tracks: topTracks.length,
+                    genres: 0,
+                },
+            )
         }
 
         const genreGroups = await groupArtistsByGenre(allArtists)
+        const genreCount = Object.keys(genreGroups).length
+
+        if (genreCount < MIN_GENRES_REQUIRED) {
+            throw new InsufficientDataError(
+                "Your music taste isn't diverse enough to generate a complete zodiac chart. Try listening to different genres and artists, then generate your chart again.",
+                {
+                    artists: allArtists.length,
+                    tracks: topTracks.length,
+                    genres: genreCount,
+                },
+            )
+        }
+
         const chartData = assignPositionsAstrologically(genreGroups)
 
+        const filledPositions = Object.values(chartData).filter((position) => position.artists.length > 0).length
+
+        if (filledPositions < 8) {
+            throw new InsufficientDataError(
+                "Unable to generate a complete music chart with your current listening data. Please listen to more music across different genres and try again.",
+                {
+                    artists: allArtists.length,
+                    tracks: topTracks.length,
+                    genres: genreCount,
+                },
+            )
+        }
+
         return chartData
-    } catch {
+    } catch (error) {
+        if (error instanceof InsufficientDataError) {
+            throw error
+        }
         return null
     }
 }
