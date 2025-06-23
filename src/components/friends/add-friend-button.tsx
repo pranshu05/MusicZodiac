@@ -4,18 +4,13 @@ import { UserPlus, Check, Clock, Users } from "lucide-react"
 
 interface AddFriendButtonProps {
     targetUserId: string
-    currentUserId: string
     initialStatus?: "none" | "pending" | "accepted" | "sent"
     className?: string
 }
 
-export function AddFriendButton({ targetUserId, currentUserId, initialStatus = "none", className = "", }: AddFriendButtonProps) {
+export function AddFriendButton({ targetUserId, initialStatus = "none" }: AddFriendButtonProps) {
     const [status, setStatus] = useState<"none" | "pending" | "accepted" | "sent" | "loading">(initialStatus)
     const [error, setError] = useState<string | null>(null)
-
-    if (targetUserId === currentUserId) {
-        return null
-    }
 
     const handleSendRequest = async () => {
         setStatus("loading")
@@ -113,8 +108,8 @@ export function AddFriendButton({ targetUserId, currentUserId, initialStatus = "
     const isClickable = status === "none" || status === "pending"
 
     return (
-        <div className={className}>
-            <button onClick={status === "pending" ? handleAcceptRequest : handleSendRequest} disabled={!isClickable} className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 font-medium text-sm${getButtonStyles()}${isClickable ? "transform hover:scale-105" : ""}`} aria-label={status === "accepted" ? "Already friends" : status === "sent" ? "Friend request sent" : status === "pending" ? "Accept friend request" : "Send friend request"}>
+        <div>
+            <button onClick={status === "pending" ? handleAcceptRequest : handleSendRequest} disabled={!isClickable} className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 font-medium text-sm ${getButtonStyles()}${isClickable ? "transform hover:scale-105" : ""}`} aria-label={status === "accepted" ? "Already friends" : status === "sent" ? "Friend request sent" : status === "pending" ? "Accept friend request" : "Send friend request"}>
                 {getButtonContent()}
             </button>
             {error && <div className="mt-2 text-xs text-red-400 bg-red-900/20 px-3 py-1 rounded">{error}</div>}

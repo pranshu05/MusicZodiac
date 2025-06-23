@@ -31,7 +31,6 @@ export function Footer() {
                                 <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-3">Account</h3>
                                 <ul className="space-y-2">
                                     <li><Link href={`${ROUTES.PROFILE}/${session.user.username}`} className="text-sm text-purple-300 hover:text-white transition-colors">Profile</Link></li>
-                                    <li><Link href={ROUTES.SETTINGS} className="text-sm text-purple-300 hover:text-white transition-colors">Settings</Link></li>
                                 </ul>
                             </div>
                         </>

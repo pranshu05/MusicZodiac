@@ -50,7 +50,9 @@ export function ProfileCard({ user, isOwnProfile }: ProfileCardProps) {
                         )}
                     </div>
                 </div>
-                <div className="absolute top-4 right-4 flex gap-2">{isOwnProfile && (session?.user?.id && !isLoading && (<AddFriendButton targetUserId={user.id} currentUserId={session.user.id} initialStatus={friendshipStatus} />))}</div>
+                <div className="absolute top-4 right-4 flex gap-2">
+                    {!isOwnProfile && (session?.user?.id && !isLoading && (<AddFriendButton targetUserId={user.id} initialStatus={friendshipStatus} />))}
+                </div>
             </div>
             <div className="pt-20 pb-6 px-8">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">

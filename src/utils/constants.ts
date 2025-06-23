@@ -2,7 +2,6 @@ export const ROUTES = {
     HOME: "/",
     CHART: "/chart",
     PROFILE: "/profile",
-    SETTINGS: "/settings",
     COMPATIBILITY: "/compatibility",
     FRIENDS: "/friends",
 }
