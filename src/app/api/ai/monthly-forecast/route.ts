@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
                     subType: "monthly",
                 },
             },
-        })
+        }) as { data: Record<string, any>; generatedAt: Date } | null
 
         if (existingForecast && !forceRegenerate) {
             const hoursSinceGenerated = (Date.now() - existingForecast.generatedAt.getTime()) / (1000 * 60 * 60)

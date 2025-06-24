@@ -8,7 +8,7 @@ interface MonthlyVibeProps {
     chartData: MusicChartData
 }
 
-interface AIForecast {
+interface aIForecast {
     interpretation: string
     recommendations: string[]
     prediction: string
@@ -20,7 +20,7 @@ interface AIForecast {
 
 export function MonthlyVibe({ chartData }: MonthlyVibeProps) {
     const [activeTab, setActiveTab] = useState<"monthly" | "compatibility">("monthly")
-    const [aiForecast, setAiForecast] = useState<AIForecast | null>(null)
+    const [aiForecast, setAiForecast] = useState<aIForecast | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -56,7 +56,7 @@ export function MonthlyVibe({ chartData }: MonthlyVibeProps) {
         }
     }, [activeTab, chartData])
 
-    const getFallbackForecast = (): AIForecast => {
+    const getFallbackForecast = (): aIForecast => {
         const dominantSigns = Object.values(chartData)
             .map((data) => data.sign)
             .slice(0, 3)

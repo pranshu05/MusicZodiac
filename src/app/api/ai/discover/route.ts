@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
                     subType: discoveryType,
                 },
             },
-        })
+        }) as { data: Record<string, any>; generatedAt: Date } | null
 
         if (existingDiscovery && !forceRegenerate) {
             const hoursSinceGenerated = (Date.now() - existingDiscovery.generatedAt.getTime()) / (1000 * 60 * 60)
@@ -231,7 +231,7 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        await prisma.AIForecast.upsert({
+        await prisma.aIForecast.upsert({
             where: {
                 userId_type_subType: {
                     userId: session.user.id,
