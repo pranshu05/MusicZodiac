@@ -4,6 +4,7 @@ export const ROUTES = {
     PROFILE: "/profile",
     COMPATIBILITY: "/compatibility",
     FRIENDS: "/friends",
+    DISCOVER: "/discover",
 }
 
 export const CHART_POSITIONS = {

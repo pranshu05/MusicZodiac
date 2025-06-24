@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { MusicChartData } from "@/types/lastfm"
 import { Sparkles, Music, Clock, Database } from "lucide-react"
 
@@ -47,6 +47,10 @@ export function DiscoveryEngine({ chartData }: DiscoveryEngineProps) {
             setIsLoading(false)
         }
     }
+
+    useEffect(() => {
+        generateDiscovery("artists")
+    }, [])
 
     const handleTabChange = (tab: typeof activeDiscovery) => {
         setActiveDiscovery(tab)

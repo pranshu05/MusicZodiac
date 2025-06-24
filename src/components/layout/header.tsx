@@ -24,6 +24,7 @@ export function Header() {
                     {session ? (
                         <>
                             <NavLink href={ROUTES.CHART} currentPath={pathname}>My Chart</NavLink>
+                            <NavLink href={ROUTES.DISCOVER} currentPath={pathname}>Discover</NavLink>
                             <NavLink href={ROUTES.COMPATIBILITY} currentPath={pathname}>Compatibility</NavLink>
                             <NavLink href={ROUTES.FRIENDS} currentPath={pathname}>Friends</NavLink>
                             <div className="relative group">
@@ -33,7 +34,6 @@ export function Header() {
                                     ) : (
                                         <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center"><User size={16} /></div>
                                     )}
-                                    <span>{session.user.name}</span>
                                 </div>
                                 <div className="absolute right-0 mt-2 w-48 bg-purple-800 rounded-md shadow-lg overflow-hidden z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                                     <div className="py-1">
@@ -55,6 +55,7 @@ export function Header() {
                         {session ? (
                             <>
                                 <Link href={ROUTES.CHART} className={`px-2 py-2 rounded ${pathname === ROUTES.CHART ? 'bg-purple-800' : 'hover:bg-purple-800'}`} onClick={() => setMenuOpen(false)}>My Chart</Link>
+                                <Link href={ROUTES.DISCOVER} className={`px-2 py-2 rounded ${pathname === ROUTES.DISCOVER ? 'bg-purple-800' : 'hover:bg-purple-800'}`} onClick={() => setMenuOpen(false)}>Discover</Link>
                                 <Link href={ROUTES.COMPATIBILITY} className={`px-2 py-2 rounded ${pathname === ROUTES.COMPATIBILITY ? 'bg-purple-800' : 'hover:bg-purple-800'}`} onClick={() => setMenuOpen(false)}>Compatibility</Link>
                                 <Link href={ROUTES.FRIENDS} className={`px-2 py-2 rounded ${pathname === ROUTES.FRIENDS ? 'bg-purple-800' : 'hover:bg-purple-800'}`} onClick={() => setMenuOpen(false)}>Friends</Link>
                                 <Link href={`${ROUTES.PROFILE}/${session.user.username || session.user.id}`} className={`px-2 py-2 rounded ${pathname.startsWith(ROUTES.PROFILE) ? 'bg-purple-800' : 'hover:bg-purple-800'}`} onClick={() => setMenuOpen(false)}>Profile</Link>

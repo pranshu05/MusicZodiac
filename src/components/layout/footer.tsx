@@ -23,6 +23,7 @@ export function Footer() {
                                 <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-3">Explore</h3>
                                 <ul className="space-y-2">
                                     <li><Link href={ROUTES.CHART} className="text-sm text-purple-300 hover:text-white transition-colors">Your Chart</Link></li>
+                                    <li><Link href={ROUTES.DISCOVER} className="text-sm text-purple-300 hover:text-white transition-colors">Discover</Link></li>
                                     <li><Link href={ROUTES.COMPATIBILITY} className="text-sm text-purple-300 hover:text-white transition-colors">Compatibility</Link></li>
                                     <li><Link href={ROUTES.FRIENDS} className="text-sm text-purple-300 hover:text-white transition-colors">Friends</Link></li>
                                 </ul>
