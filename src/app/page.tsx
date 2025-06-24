@@ -37,7 +37,7 @@ export default async function Home() {
                             <div className="mb-12">
                                 <h2 className="text-2xl font-bold mb-6 text-glow">Your Music Zodiac</h2>
                                 <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-6 border border-purple-500/20 box-glow">
-                                    <StarChart chartData={userChart.chartData as any} className="max-w-md mx-auto mb-8" />
+                                    <StarChart chartData={userChart.chartData as any} className="max-w-lg mx-auto mb-8" />
                                     <div className="text-center"><Link href={ROUTES.CHART} className="neon-button">View Full Chart</Link></div>
                                 </div>
                             </div>

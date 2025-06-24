@@ -72,55 +72,55 @@ export function DiscoveryEngine({ chartData }: DiscoveryEngineProps) {
     }
 
     return (
-        <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-6 border border-purple-500/20 box-glow">
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-glow-pink">AI Music Discovery</h2>
-                {currentResult?.cached && (<div className="flex items-center gap-2 text-xs text-purple-400"><Database size={14} /><span>Cached discovery</span></div>)}
+        <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-purple-500/20 box-glow">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-glow-pink">AI Music Discovery</h2>
+                {currentResult?.cached && (<div className="flex items-center gap-2 text-xs text-purple-400 bg-purple-900/30 px-3 py-1 rounded-full"><Database size={12} /><span>Cached discovery</span></div>)}
             </div>
-            <div className="flex gap-2 mb-6">
+            <div className="flex gap-2 mb-6 overflow-x-auto">
                 {[
-                    { key: "artists", label: "Artists", icon: <Music size={16} /> },
-                    { key: "genres", label: "Genres", icon: <Sparkles size={16} /> },
+                    { key: "artists", label: "Artists", icon: <Music size={14} /> },
+                    { key: "genres", label: "Genres", icon: <Sparkles size={14} /> },
                 ].map(({ key, label, icon }) => (
-                    <button key={key} onClick={() => handleTabChange(key as typeof activeDiscovery)} className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 ${activeDiscovery === key ? "bg-gradient-to-r from-pink-600/50 to-purple-600/50 text-white text-glow-pink" : "bg-purple-900/30 text-purple-300 hover:text-white hover:bg-purple-800/40"}`}>{icon}<span className="text-sm font-medium">{label}</span></button>
+                    <button key={key} onClick={() => handleTabChange(key as typeof activeDiscovery)} className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 whitespace-nowrap text-sm font-medium ${activeDiscovery === key ? "bg-gradient-to-r from-pink-600/50 to-purple-600/50 text-white text-glow-pink" : "bg-purple-900/30 text-purple-300 hover:text-white hover:bg-purple-800/40"}`}>{icon}<span>{label}</span></button>
                 ))}
             </div>
             {isLoading && (
-                <div className="text-center py-12">
+                <div className="text-center py-8 sm:py-12">
                     <div className="w-8 h-8 border-2 border-pink-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-purple-300">AI is discovering your perfect musical matches...</p>
+                    <p className="text-purple-300 text-sm sm:text-base">AI is discovering your perfect musical matches...</p>
                 </div>
             )}
             {error && (
-                <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4 mb-6">
-                    <p className="text-red-300">{error}</p>
+                <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 mb-6">
+                    <p className="text-red-300 text-sm">{error}</p>
                 </div>
             )}
             {!isLoading && currentResult && (
                 <div className="space-y-4">
                     {activeDiscovery === "artists" && currentResult.artists && (
-                        <div className="space-y-3">
+                        <div className="grid gap-3">
                             {currentResult.artists.map((artist, index) => (
-                                <div key={index} className="bg-purple-900/30 rounded-lg p-4 border border-purple-500/20 hover:border-purple-500/40 transition-all">
-                                    <h4 className="font-bold text-white mb-2">{artist.name}</h4>
-                                    <p className="text-purple-200 text-sm mb-2">{artist.reason}</p>
-                                    <p className="text-purple-300 text-xs"><span className="font-medium">Chart Connection:</span> {artist.chartConnection}</p>
+                                <div key={index} className="bg-purple-900/30 rounded-xl p-4 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300">
+                                    <h4 className="font-bold text-white mb-2 text-sm sm:text-base">{artist.name}</h4>
+                                    <p className="text-purple-200 text-sm mb-3 leading-relaxed">{artist.reason}</p>
+                                    <div className="bg-purple-800/30 rounded-lg p-2"><p className="text-purple-300 text-xs"><span className="font-medium text-purple-200">Chart Connection:</span> {artist.chartConnection}</p></div>
                                 </div>
                             ))}
                         </div>
                     )}
                     {activeDiscovery === "genres" && currentResult.genres && (
-                        <div className="space-y-3">
+                        <div className="grid gap-3">
                             {currentResult.genres.map((genre, index) => (
-                                <div key={index} className="bg-purple-900/30 rounded-lg p-4 border border-purple-500/20 hover:border-purple-500/40 transition-all">
-                                    <h4 className="font-bold text-white mb-2">{genre.genre}</h4>
-                                    <p className="text-purple-200 text-sm mb-2">{genre.description}</p>
-                                    <p className="text-purple-300 text-xs"><span className="font-medium">Why it fits:</span> {genre.whyItFits}</p>
+                                <div key={index} className="bg-purple-900/30 rounded-xl p-4 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300">
+                                    <h4 className="font-bold text-white mb-2 text-sm sm:text-base">{genre.genre}</h4>
+                                    <p className="text-purple-200 text-sm mb-3 leading-relaxed">{genre.description}</p>
+                                    <div className="bg-purple-800/30 rounded-lg p-2"><p className="text-purple-300 text-xs"><span className="font-medium text-purple-200">Why it fits:</span> {genre.whyItFits}</p></div>
                                 </div>
                             ))}
                         </div>
                     )}
-                    <div className="text-center pt-4 space-y-2">
+                    <div className="text-center pt-4 space-y-2 border-t border-purple-500/20">
                         <p className="text-xs text-purple-400">✨ Powered by AI • Personalized based on your unique musical chart</p>
                         {currentResult.nextRegenerateTime && (<div className="flex items-center justify-center gap-2 text-xs text-purple-500"><Clock size={12} /><span>Next update available in {formatTimeUntilRegenerate(currentResult.nextRegenerateTime)}</span></div>)}
                     </div>

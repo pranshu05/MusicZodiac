@@ -63,11 +63,11 @@ export default async function ChartPage() {
 
     return (
         <div className="container mx-auto px-4 py-12 pb-24">
-            <div className="max-w-5xl mx-auto">
+            <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                     <div className="lg:sticky lg:top-24">
                         <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-8 border border-purple-500/30 box-glow shadow-xl shadow-purple-900/20">
-                            <StarChart chartData={chartData} className="max-w-md mx-auto" />
+                            <StarChart chartData={chartData} className="max-w-xl mx-auto" />
                             <div className="mt-8 text-center">
                                 <h2 className="text-xl font-bold text-glow-pink mb-4">Share Your Chart</h2>
                                 <ShareButtons username={session.user.username || session.user.id} />

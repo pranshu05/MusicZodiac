@@ -28,13 +28,13 @@ export function Header() {
                             <NavLink href={ROUTES.COMPATIBILITY} currentPath={pathname}>Compatibility</NavLink>
                             <NavLink href={ROUTES.FRIENDS} currentPath={pathname}>Friends</NavLink>
                             <div className="relative group">
-                                <div className="flex items-center space-x-2 cursor-pointer">
+                                <NavLink href={`${ROUTES.PROFILE}/${session.user.username}`} currentPath={pathname}>
                                     {session.user.image ? (
                                         <div className="w-8 h-8 rounded-full overflow-hidden"><img src={session.user.image} alt={session.user.name || "User"} width={32} height={32} /></div>
                                     ) : (
                                         <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center"><User size={16} /></div>
                                     )}
-                                </div>
+                                </NavLink>
                                 <div className="absolute right-0 mt-2 w-48 bg-purple-800 rounded-md shadow-lg overflow-hidden z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                                     <div className="py-1">
                                         <Link href={`${ROUTES.PROFILE}/${session.user.username}`} className="block px-4 py-2 text-sm hover:bg-purple-700">Profile</Link>

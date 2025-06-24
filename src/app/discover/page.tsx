@@ -61,7 +61,7 @@ export default async function ChartPage() {
 
     return (
         <div className="container mx-auto px-4 py-12 pb-24">
-            <div className="max-w-5xl mx-auto">
+            <div className="max-w-7xl mx-auto">
                 <DiscoveryEngine chartData={chartData} />
             </div>
         </div>
