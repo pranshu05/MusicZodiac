@@ -190,10 +190,6 @@ async function groupArtistsByGenre(artists: any[]): Promise<Record<string, any[]
         const transformedArtist = {
             id: artist.mbid || artist.name,
             name: artist.name,
-            image:
-                artist.image?.find((img: any) => img.size === "large")?.["#text"] ||
-                artist.image?.find((img: any) => img.size === "medium")?.["#text"] ||
-                null,
         }
 
         genreGroups[category].push(transformedArtist)
@@ -317,7 +313,6 @@ export async function getLastFmData(username: string): Promise<MusicChartData | 
         const trackArtists = topTracks.map((track: any) => ({
             name: track.artist?.name || track.artist,
             mbid: track.artist?.mbid,
-            image: track.image,
         }))
 
         const allArtists = mergeUniqueArtists(topArtists, trackArtists)

@@ -39,8 +39,7 @@ export function UserSearch() {
             } else {
                 setSearchResults([])
             }
-        } catch (error) {
-            console.error("Search error:", error)
+        } catch {
             setSearchResults([])
         } finally {
             setIsLoading(false)

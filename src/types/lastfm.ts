@@ -1,7 +1,6 @@
 export interface LastfmArtist {
     id: string
     name: string
-    image?: string
 }
 
 export interface MusicSign {

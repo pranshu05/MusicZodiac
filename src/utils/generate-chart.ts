@@ -5,7 +5,6 @@ import type { User } from "@prisma/client"
 type OptimizedArtist = {
     id: string
     name: string
-    image?: string
 }
 
 type OptimizedChartData = {
@@ -29,18 +28,10 @@ function optimizeChartData(fullChartData: any): OptimizedChartData {
             if (signData && signData.artists && Array.isArray(signData.artists)) {
                 optimizedData[key] = {
                     sign: signData.sign || "",
-                    artists: signData.artists.map((artist: any) => {
-                        const optimizedArtist: OptimizedArtist = {
-                            id: artist.id || artist.name || "",
-                            name: artist.name || "",
-                        }
-
-                        if (artist.image) {
-                            optimizedArtist.image = artist.image
-                        }
-
-                        return optimizedArtist
-                    }),
+                    artists: signData.artists.map((artist: any) => ({
+                        id: artist.id || artist.name || "",
+                        name: artist.name || "",
+                    })),
                 }
             }
         })
