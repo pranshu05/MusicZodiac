@@ -6,6 +6,7 @@ const nextConfig = {
         LASTFM_CLIENT_ID: process.env.LASTFM_CLIENT_ID,
         LASTFM_CLIENT_SECRET: process.env.LASTFM_CLIENT_SECRET,
         DATABASE_URL: process.env.DATABASE_URL,
+        GROQ_API_KEY: process.env.GROQ_API_KEY
     }
 };
 

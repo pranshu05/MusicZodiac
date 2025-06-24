@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { StarChart } from "@/components/chart/star-chart"
 import { ChartDetails } from "@/components/chart/chart-details"
 import { InsufficientDataError as InsufficientDataErrorComponent } from "@/components/chart/insufficient-data-error"
+import { DiscoveryEngine } from "@/components/ai/discovery-engine"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { ROUTES } from "@/utils/constants"
@@ -62,7 +63,7 @@ export default async function ChartPage() {
     const chartData = userChart.chartData as unknown as MusicChartData
 
     return (
-        <div className="container mx-auto px-4 py-12 pb-24">
+        <div className="container mx-auto px-4 py-12 pb-24 space-y-8">
             <div className="max-w-5xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                     <div className="lg:sticky lg:top-24">
@@ -76,6 +77,9 @@ export default async function ChartPage() {
                     </div>
                     <ChartDetails chartData={chartData} username={session.user.name || undefined} />
                 </div>
+            </div>
+            <div className="max-w-5xl mx-auto">
+                <DiscoveryEngine chartData={chartData} />
             </div>
         </div>
     )

@@ -30,6 +30,7 @@ model User {
   musicChart      MusicChart?
   friends         Friend[]  @relation("UserFriends")
   friendsOf       Friend[]  @relation("FriendUsers")
+  aiForecasts     AIForecast[]
 
   @@unique([id, username])
 }
@@ -56,4 +57,18 @@ model Friend {
   friend    User     @relation("FriendUsers", fields: [friendId], references: [id], onDelete: Cascade)
 
   @@unique([userId, friendId])
+}
+
+model AIForecast {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // 'monthly' or 'discovery'
+  subType     String?  // for discovery: 'artists', 'genres'
+  data        Json
+  generatedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, subType])
 }

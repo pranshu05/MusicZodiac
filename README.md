@@ -6,8 +6,9 @@ Music Zodiac is a web application that analyzes your Lastfm listening habits and
 
 ## ✨ Features
 
+- **AI-Powered Discoveries**: Get personalized music recommendations based on your zodiac chart
 - **Music Zodiac Chart**: Discover your musical identity through a personalized star chart based on your listening habits
-- **Monthly Vibes**: See how your music taste evolves over time
+- **Monthly Vibes**: Get AI-generated insights into your musical trends and preferences for the current month
 - **Compatibility**: Compare your music taste with friends and discover your musical compatibility
 - **Lastfm Integration**: Seamlessly connect with your Lastfm account to analyze your listening history
 
@@ -48,6 +49,7 @@ Music Zodiac is a web application that analyzes your Lastfm listening habits and
    NEXTAUTH_SECRET="your-nextauth-secret"
    LASTFM_CLIENT_ID="your-lastfm-api-key"
    LASTFM_CLIENT_SECRET="your-lastfm-api-secret"
+   GROQ_API_KEY="your-groq-api-key"
    ```
 
 4. Run the development server
