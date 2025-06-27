@@ -528,7 +528,7 @@ export async function getLastFmData(username: string): Promise<MusicChartData | 
 
         const filledPositions = Object.values(chartData).filter((position) => position.artists.length > 0).length
 
-        if (filledPositions < 8) {
+        if (filledPositions < 5) {
             throw new InsufficientDataError(
                 "Unable to generate a complete music chart with your current listening data. Please listen to more music across different genres and try again.",
                 {
