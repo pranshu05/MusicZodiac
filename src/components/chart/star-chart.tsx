@@ -170,9 +170,7 @@ export function StarChart({ chartData, className }: StarChartProps) {
                     </defs>
                     <circle cx={centerX} cy={centerY} r={radius} fill="url(#bg-gradient)" stroke="none" />
                     <g className="orbital-rings" strokeOpacity="0.2" strokeWidth="1" fill="none">{[0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 0.85, 0.95].map((distance, index) => (<circle key={index} cx={centerX} cy={centerY} r={radius * distance} stroke="#ff00ff" strokeDasharray="3,3" />))}</g>
-                    <g className="constellation-lines" strokeOpacity="0.15" strokeWidth="1">
-                        {Object.entries(positions).flatMap(([pos1, data1], index) => Object.entries(positions).slice(index + 1).map(([pos2, data2]) => (<line key={`${pos1}-${pos2}`} x1={data1.x} y1={data1.y} x2={data2.x} y2={data2.y} stroke="#ff00ff" strokeDasharray="2,4" />)),)}
-                    </g>
+                    <g className="constellation-lines" strokeOpacity="0.15" strokeWidth="1">{Object.entries(positions).flatMap(([pos1, data1], index) => Object.entries(positions).slice(index + 1).map(([pos2, data2]) => (<line key={`${pos1}-${pos2}`} x1={data1.x} y1={data1.y} x2={data2.x} y2={data2.y} stroke="#ff00ff" strokeDasharray="2,4" />)),)}</g>
                     {Object.entries(positions).map(([position, pos], index) => {
                         const positionKey = position as keyof typeof CHART_POSITIONS
                         const signData = chartData[positionKey]

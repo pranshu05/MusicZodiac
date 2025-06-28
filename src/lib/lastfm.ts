@@ -251,11 +251,9 @@ function determineGenreFromTags(tags: string[]): { primary: string; confidence: 
 
             if (lowerTag === genreData.primary.toLowerCase()) {
                 matchScore = genreData.weight * 3 * positionWeight
-            }
-            else if (genreData.secondary.some((keyword) => keyword === lowerTag)) {
+            } else if (genreData.secondary.some((keyword) => keyword === lowerTag)) {
                 matchScore = genreData.weight * 2 * positionWeight
-            }
-            else if (genreData.secondary.some((keyword) => lowerTag.includes(keyword) || keyword.includes(lowerTag))) {
+            } else if (genreData.secondary.some((keyword) => lowerTag.includes(keyword) || keyword.includes(lowerTag))) {
                 matchScore = genreData.weight * 1 * positionWeight
             }
 
@@ -382,10 +380,15 @@ function assignPositionsAstrologically(genreGroups: Record<string, { artists: an
     }
 
     const availableGenres = Object.keys(genreGroups).filter(
-        (genre) => genreGroups[genre].artists.length > 0 && genreGroups[genre].avgConfidence > 0.3,
+        (genre) => genreGroups[genre].artists.length > 0 && genreGroups[genre].avgConfidence > 0.2,
     )
 
-    const usedGenres = new Set<string>()
+    if (availableGenres.length === 0) {
+        availableGenres.push(...Object.keys(genreGroups).filter((genre) => genreGroups[genre].artists.length > 0))
+    }
+
+    const usedArtists = new Set<string>()
+    const genreUsageCount = new Map<string, number>()
 
     const positionPriority = [
         "sun",
@@ -409,8 +412,6 @@ function assignPositionsAstrologically(genreGroups: Record<string, { artists: an
         let bestScore = 0
 
         for (const genre of availableGenres) {
-            if (usedGenres.has(genre)) continue
-
             let score = 0
 
             if (positionData.affinities.includes(genre)) {
@@ -425,19 +426,36 @@ function assignPositionsAstrologically(genreGroups: Record<string, { artists: an
 
             score += Math.min(genreGroups[genre].artists.length * 5, 25)
 
-            if (score > bestScore) {
+            const usageCount = genreUsageCount.get(genre) || 0
+            score -= usageCount * 30
+
+            const unusedArtists = genreGroups[genre].artists.filter((artist) => !usedArtists.has(artist.id))
+            if (unusedArtists.length >= 3) {
+                score += 20
+            }
+
+            if (score > bestScore && score > 0) {
                 bestScore = score
                 bestGenre = genre
             }
         }
 
-        if (bestGenre && bestScore > 0) {
-            chartData[key].sign = bestGenre
-            chartData[key].artists = genreGroups[bestGenre].artists.slice(0, 3).map((artist) => ({
-                id: artist.id,
-                name: artist.name,
-            }))
-            usedGenres.add(bestGenre)
+        if (bestGenre && genreGroups[bestGenre]) {
+            const unusedArtists = genreGroups[bestGenre].artists.filter((artist) => !usedArtists.has(artist.id))
+
+            if (unusedArtists.length > 0) {
+                chartData[key].sign = bestGenre
+
+                const selectedArtists = unusedArtists.slice(0, 3)
+                chartData[key].artists = selectedArtists.map((artist) => ({
+                    id: artist.id,
+                    name: artist.name,
+                }))
+
+                selectedArtists.forEach((artist) => usedArtists.add(artist.id))
+
+                genreUsageCount.set(bestGenre, (genreUsageCount.get(bestGenre) || 0) + 1)
+            }
         }
     }
 
@@ -446,24 +464,33 @@ function assignPositionsAstrologically(genreGroups: Record<string, { artists: an
 
         if (!chartData[key].sign || chartData[key].artists.length === 0) {
             for (const genre of availableGenres) {
-                if (!usedGenres.has(genre) && genreGroups[genre].artists.length > 0) {
+                const unusedArtists = genreGroups[genre].artists.filter((artist) => !usedArtists.has(artist.id))
+
+                if (unusedArtists.length > 0) {
                     chartData[key].sign = genre
-                    chartData[key].artists = genreGroups[genre].artists.slice(0, 3).map((artist) => ({
+
+                    const selectedArtists = unusedArtists.slice(0, 3)
+                    chartData[key].artists = selectedArtists.map((artist) => ({
                         id: artist.id,
                         name: artist.name,
                     }))
-                    usedGenres.add(genre)
+
+                    selectedArtists.forEach((artist) => usedArtists.add(artist.id))
+                    genreUsageCount.set(genre, (genreUsageCount.get(genre) || 0) + 1)
                     break
                 }
             }
         }
-
-        if (!chartData[key].sign) {
-            chartData[key].sign = "Alternative"
-        }
     }
 
-    return chartData
+    const filledChartData: Partial<MusicChartData> = {}
+    Object.entries(chartData).forEach(([position, data]) => {
+        if (data.sign && data.artists.length > 0) {
+            filledChartData[position as keyof MusicChartData] = data
+        }
+    })
+
+    return filledChartData as MusicChartData
 }
 
 export class InsufficientDataError extends Error {
@@ -530,7 +557,7 @@ export async function getLastFmData(username: string): Promise<MusicChartData | 
 
         if (filledPositions < 5) {
             throw new InsufficientDataError(
-                "Unable to generate a complete music chart with your current listening data. Please listen to more music across different genres and try again.",
+                "Unable to generate a music chart with your current listening data. Please listen to more music across different genres and try again.",
                 {
                     artists: allArtists.length,
                     tracks: topTracks.length,

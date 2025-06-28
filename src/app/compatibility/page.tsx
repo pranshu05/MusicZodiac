@@ -6,10 +6,11 @@ import { ROUTES } from "@/utils/constants"
 import type { MusicChartData } from "@/types/lastfm"
 import { generateAndSaveChart } from "@/utils/generate-chart"
 import Link from "next/link"
-import { Users, UserPlus } from "lucide-react"
+import { Users, UserPlus, Music } from "lucide-react"
 import { calculateCompatibility } from "@/utils/compatibility"
 import { CompatibilityCard } from "@/components/compatibility/compatibility-card"
 import { CompatibilityGuide } from "@/components/compatibility/compatibility-guide"
+import { InsufficientDataError } from "@/lib/lastfm"
 
 export default async function CompatibilityPage() {
     const session = await getServerSession(authOptions)
@@ -22,24 +23,47 @@ export default async function CompatibilityPage() {
         where: { userId: session.user.id },
     })
 
+    let hasInsufficientData = false
+
     if (!userChart) {
         try {
             const userData = await prisma.user.findUnique({
                 where: { id: session.user.id }
             })
 
-            if (!userData) throw new Error("User not found")
+            if (!userData) redirect(ROUTES.HOME)
 
             await generateAndSaveChart(userData)
             userChart = await prisma.musicChart.findUnique({
                 where: { userId: session.user.id }
             })
-        } catch {
-            throw new Error("Failed to generate or retrieve user chart")
+        } catch (error) {
+            if (error instanceof InsufficientDataError) {
+                hasInsufficientData = true
+            } else {
+                redirect(ROUTES.CHART)
+            }
         }
     }
 
-    if (!userChart) throw new Error("Failed to generate or retrieve user chart")
+    if (!userChart || hasInsufficientData) {
+        return (
+            <div className="mx-auto px-4 py-8 space-y-8">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-8">
+                        <h1 className="text-3xl font-bold text-white mb-4 text-glow-pink">Musical Compatibility</h1>
+                        <p className="text-purple-200">Discover how your music taste aligns with your friends' cosmic charts.</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-8 border border-purple-500/20 box-glow text-center">
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-600 to-red-600 flex items-center justify-center box-glow-pink mb-4 mx-auto"><Music size={32} className="text-white" /></div>
+                        <h2 className="text-xl font-bold text-white mb-4">Generate Your Chart First</h2>
+                        <p className="text-purple-200 mb-6">You need to generate your music zodiac chart before you can check compatibility with friends.</p>
+                        <Link href={ROUTES.CHART} className="neon-button">Generate My Chart</Link>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     const chartData = userChart.chartData as unknown as MusicChartData
 

@@ -74,7 +74,7 @@ export function ChartDetails({ chartData, username, selectedPosition, onPosition
                 <p className="text-purple-200 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">A cosmic musical identity revealed through celestial positions. Click on each position to explore unique musical traits and influences.</p>
             </motion.div>
             <div className="space-y-4">
-                {Object.entries(chartData).map(([position, data], index) => {
+                {Object.entries(chartData).filter(([_, data]) => data.sign && data.artists.length > 0).map(([position, data], index) => {
                     const positionKey = position as keyof typeof CHART_POSITIONS
                     const sign = MUSIC_SIGNS[data.sign as keyof typeof MUSIC_SIGNS]
                     const isExpanded = expandedPosition === position
@@ -87,9 +87,7 @@ export function ChartDetails({ chartData, username, selectedPosition, onPosition
                                 <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-grow">
                                     <motion.div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0 ${isExpanded ? "box-glow-pink scale-110" : "group-hover:scale-105"}`} style={{ backgroundColor: sign.color }} animate={{ boxShadow: isExpanded ? `0 0 20px ${sign.color}40, 0 0 40px ${sign.color}20` : "none", }}>{getSignIcon(position)}</motion.div>
                                     <div className="flex-grow min-w-0">
-                                        <div className="flex items-center gap-2">
-                                            <h3 className={`text-lg sm:text-2xl font-bold text-white transition-all duration-300 truncate ${isExpanded ? "text-glow-pink" : "group-hover:text-pink-300"}`}>{position.charAt(0).toUpperCase() + position.slice(1)} in {data.sign}</h3>
-                                        </div>
+                                        <div className="flex items-center gap-2"><h3 className={`text-lg sm:text-2xl font-bold text-white transition-all duration-300 truncate ${isExpanded ? "text-glow-pink" : "group-hover:text-pink-300"}`}>{position.charAt(0).toUpperCase() + position.slice(1)} in {data.sign}</h3></div>
                                         <p className="text-purple-200 text-xs sm:text-sm leading-relaxed">{CHART_POSITIONS[positionKey]}</p>
                                     </div>
                                 </div>
