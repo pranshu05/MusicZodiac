@@ -10,6 +10,28 @@ import { generateAndSaveChart } from "@/utils/generate-chart"
 import { InsufficientDataError } from "@/lib/lastfm"
 import Link from "next/link"
 import { Music } from "lucide-react"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+    title: "AI Music Discovery | Music Zodiac",
+    description: "Get personalized AI-powered music recommendations based on your cosmic musical profile. Discover new artists and genres that align with your zodiac chart.",
+    openGraph: {
+        title: "AI Music Discovery | Music Zodiac",
+        description: "Get personalized AI-powered music recommendations based on your cosmic musical profile.",
+        images: [
+            {
+                url: "/musiczodiac.png",
+                width: 400,
+                height: 40,
+                alt: "AI Music Discovery - Music Zodiac",
+            },
+        ],
+    },
+    robots: {
+        index: false,
+        follow: true,
+    },
+}
 
 export default async function DiscoverPage() {
     const session = await getServerSession(authOptions)

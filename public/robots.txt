@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /privacy-policy
+Allow: /terms-of-service
+
+Disallow: /chart
+Disallow: /discover
+Disallow: /compatibility
+Disallow: /friends
+Disallow: /profile/
+Disallow: /api/
+Disallow: /auth/
+
+Sitemap: https://musiczodiac.com/sitemap.xml

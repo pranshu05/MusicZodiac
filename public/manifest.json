@@ -1,0 +1,31 @@
+{
+    "name": "Music Zodiac",
+    "short_name": "Music Zodiac",
+    "description": "Discover your cosmic musical identity through Last.fm data analysis",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#1a0044",
+    "theme_color": "#9900ff",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/musiczodiac.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/musiczodiac.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "categories": [
+        "music",
+        "entertainment",
+        "lifestyle"
+    ],
+    "lang": "en",
+    "dir": "ltr"
+}

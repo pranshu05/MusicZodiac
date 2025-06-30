@@ -6,6 +6,28 @@ import { ROUTES } from "@/utils/constants"
 import { FriendsList } from "@/components/friends/friends-list"
 import { FriendRequests } from "@/components/friends/friend-requests"
 import { UserSearch } from "@/components/friends/user-search"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+    title: "Friends | Music Zodiac",
+    description: "Connect with other music lovers, send friend requests, and discover people with compatible musical tastes through Music Zodiac.",
+    openGraph: {
+        title: "Friends | Music Zodiac",
+        description: "Connect with other music lovers and discover people with compatible musical tastes.",
+        images: [
+            {
+                url: "/musiczodiac.png",
+                width: 400,
+                height: 400,
+                alt: "Friends - Music Zodiac",
+            },
+        ],
+    },
+    robots: {
+        index: false,
+        follow: true,
+    },
+}
 
 export default async function FriendsPage() {
     const session = await getServerSession(authOptions)

@@ -10,10 +10,55 @@ import { generateAndSaveChart } from "@/utils/generate-chart"
 import { ProfileCard } from "@/components/profile/profile-card"
 import { ShareButtons } from "@/components/profile/share-buttons"
 import { InsufficientDataError } from "@/lib/lastfm"
+import type { Metadata } from "next"
 
 interface ProfilePageProps {
     params: {
         username: string
+    }
+}
+
+export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
+    const { username } = params
+
+    const user = await prisma.user.findFirst({
+        where: { username },
+        select: { name: true, username: true, image: true },
+    })
+
+    if (!user) {
+        return {
+            title: "User Not Found | Music Zodiac",
+            description: "The requested user profile could not be found.",
+        }
+    }
+
+    const displayName = user.name || user.username || "Music Lover"
+
+    return {
+        title: `${displayName}'s Music Chart | Music Zodiac`,
+        description: `Explore ${displayName}'s cosmic musical identity and zodiac chart. Discover their musical personality through astrological analysis of their Last.fm data.`,
+        openGraph: {
+            title: `${displayName}'s Music Chart | Music Zodiac`,
+            description: `Explore ${displayName}'s cosmic musical identity and zodiac chart.`,
+            images: [
+                {
+                    url: user.image || "/musiczodiac.png",
+                    width: 400,
+                    height: 400,
+                    alt: `${displayName}'s Music Zodiac Chart`,
+                },
+            ],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: `${displayName}'s Music Chart | Music Zodiac`,
+            description: `Explore ${displayName}'s cosmic musical identity.`,
+            images: [user.image || "/musiczodiac.png"],
+        },
+        alternates: {
+            canonical: `/profile/${username}`,
+        },
     }
 }
 
@@ -75,25 +120,47 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     const chartData = userChart.chartData as unknown as MusicChartData
     const isOwnProfile = currentUser?.id === user.id
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        mainEntity: {
+            "@type": "Person",
+            name: user.name || user.username,
+            identifier: user.username,
+            image: user.image,
+            url: `https://musiczodiac.com/profile/${user.username}`,
+            sameAs: `https://last.fm/user/${user.username}`,
+            description: `${user.name || user.username}'s music zodiac chart and cosmic musical identity`,
+        },
+        about: {
+            "@type": "CreativeWork",
+            name: "Music Zodiac Chart",
+            description: "A personalized astrological analysis of musical taste",
+        },
+    }
+
     return (
-        <div className="container mx-auto px-4 py-12 pb-24">
-            <div className="max-w-7xl mx-auto">
-                <ProfileCard user={user} isOwnProfile={isOwnProfile} />
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mt-8">
-                    <div className="lg:sticky lg:top-24">
-                        <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-8 border border-purple-500/30 box-glow shadow-xl shadow-purple-900/20">
-                            <StarChart chartData={chartData} className="max-w-xl mx-auto" />
-                            {isOwnProfile && (
-                                <div className="mt-6 text-center">
-                                    <h2 className="text-xl font-bold text-glow-pink mb-2">Share This Chart</h2>
-                                    <ShareButtons username={user.username || user.id} />
-                                </div>
-                            )}
+        <>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+            <div className="container mx-auto px-4 py-12 pb-24">
+                <div className="max-w-7xl mx-auto">
+                    <ProfileCard user={user} isOwnProfile={isOwnProfile} />
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mt-8">
+                        <div className="lg:sticky lg:top-24">
+                            <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-8 border border-purple-500/30 box-glow shadow-xl shadow-purple-900/20">
+                                <StarChart chartData={chartData} className="max-w-xl mx-auto" />
+                                {isOwnProfile && (
+                                    <div className="mt-6 text-center">
+                                        <h2 className="text-xl font-bold text-glow-pink mb-2">Share This Chart</h2>
+                                        <ShareButtons username={user.username || user.id} />
+                                    </div>
+                                )}
+                            </div>
                         </div>
+                        <ChartDetails chartData={chartData} username={user.name || undefined} />
                     </div>
-                    <ChartDetails chartData={chartData} username={user.name || undefined} />
                 </div>
             </div>
-        </div>
+        </>
     )
 }

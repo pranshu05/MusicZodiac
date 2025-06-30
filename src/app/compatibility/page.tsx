@@ -11,6 +11,28 @@ import { calculateCompatibility } from "@/utils/compatibility"
 import { CompatibilityCard } from "@/components/compatibility/compatibility-card"
 import { CompatibilityGuide } from "@/components/compatibility/compatibility-guide"
 import { InsufficientDataError } from "@/lib/lastfm"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+    title: "Musical Compatibility | Music Zodiac",
+    description: "Discover how your music taste aligns with your friends' cosmic charts. Find musical soulmates and explore compatibility scores based on astrological profiles.",
+    openGraph: {
+        title: "Musical Compatibility | Music Zodiac",
+        description: "Discover how your music taste aligns with your friends' cosmic charts.",
+        images: [
+            {
+                url: "/musiczodiac.png",
+                width: 400,
+                height: 400,
+                alt: "Musical Compatibility - Music Zodiac",
+            },
+        ],
+    },
+    robots: {
+        index: false,
+        follow: true,
+    },
+}
 
 export default async function CompatibilityPage() {
     const session = await getServerSession(authOptions)
