@@ -37,8 +37,12 @@ export function Footer() {
                         </>
                     )}
                     <div className="md:col-span-1">
-                        <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-3">Connect</h3>
-                        <div className="flex space-x-2">
+                        <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-3">Legal & Support</h3>
+                        <ul className="space-y-2">
+                            <li><Link href="/privacy-policy" className="text-sm text-purple-300 hover:text-white transition-colors">Privacy Policy</Link></li>
+                            <li><Link href="/terms-of-service" className="text-sm text-purple-300 hover:text-white transition-colors">Terms of Service</Link></li>
+                        </ul>
+                        <div className="flex space-x-2 mt-4">
                             <Link href="https://github.com/pranshu05/MusicZodiac" target="_blank" rel="noopener noreferrer" className="text-purple-300 hover:text-white transition-colors"><Github className="h-5 w-5" /></Link>
                             <Link href="https://producthunt.com/products/music-zodiac" target="_blank" rel="noopener noreferrer" className="text-purple-300 hover:text-white transition-colors"><FaProductHunt className="h-5 w-5" /></Link>
                         </div>
