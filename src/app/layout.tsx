@@ -1,9 +1,5 @@
-import type React from "react"
-import { Providers } from "@/app/providers"
-import "./globals.css"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import type { Metadata } from "next"
+import ClientLayout from "./clientLayout"
 
 export const metadata: Metadata = {
     title: {
@@ -72,25 +68,5 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <html lang="en">
-            <head>
-                <link rel="icon" href="/icon.png" type="image/png" />
-                <link rel="manifest" href="/manifest.json" />
-                <meta name="theme-color" content="#9900ff" />
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-            </head>
-            <body className="scanlines">
-                <div className="min-h-screen flex flex-col">
-                    <Providers>
-                        <Header />
-                        <main className="flex-grow">{children}</main>
-                        <Footer />
-                    </Providers>
-                </div>
-                <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1] retro-grid"></div>
-            </body>
-        </html>
-    )
+    return <ClientLayout>{children}</ClientLayout>
 }

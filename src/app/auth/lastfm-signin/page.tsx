@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import { signIn } from "next-auth/react"
 import { useSearchParams, useRouter } from "next/navigation"
-import { Music } from "lucide-react"
+import { LoadingOverlay } from "@/components/ui/loading-overlay"
 
 export default function LastFmSigninPage() {
     const searchParams = useSearchParams()
@@ -41,18 +41,7 @@ export default function LastFmSigninPage() {
     }, [searchParams, router])
 
     if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center box-glow-pink pulse mb-4 mx-auto"><Music size={32} className="text-white" /></div>
-                    <h1 className="text-2xl font-bold text-glow-pink mb-2">Connecting to Last.fm</h1>
-                    <p className="text-purple-200">Please wait while we set up your account...</p>
-                    <div className="mt-4">
-                        <div className="w-8 h-8 border-2 border-pink-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                    </div>
-                </div>
-            </div>
-        )
+        return <LoadingOverlay message="Connecting to Last.fm..." />
     }
 
     if (error) {

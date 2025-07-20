@@ -1,3 +1,5 @@
+import { LoadingOverlay } from "@/components/ui/loading-overlay"
+
 export default function Loading() {
-    return null
+    return <LoadingOverlay message="Loading your friends..." />
 }
