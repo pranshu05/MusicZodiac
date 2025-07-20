@@ -19,8 +19,7 @@
 
 @layer base {
     body {
-        @apply bg-gradient-to-b from-[#2a0066] to-[#1a0044] text-white min-h-screen;
-        background-attachment: fixed;
+        @apply bg-gradient-to-b from-[#2a0066] to-[#1a0044] text-white min-h-screen bg-fixed;
     }
 
     h1,
@@ -33,217 +32,133 @@
     }
 
     .retro-grid {
-        background-image: linear-gradient(to right, var(--grid-color) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-        background-size: 40px 40px;
+        @apply bg-[linear-gradient(to_right,var(--grid-color)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-color)_1px,transparent_1px)] bg-[length:40px_40px];
     }
 
     .text-glow {
-        text-shadow: 0 0 5px var(--neon-purple), 0 0 10px var(--neon-purple);
+        @apply [text-shadow:0_0_5px_var(--neon-purple),0_0_10px_var(--neon-purple)];
     }
 
     .text-glow-pink {
-        text-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink);
+        @apply [text-shadow:0_0_5px_var(--neon-pink),0_0_10px_var(--neon-pink)];
     }
 
     .text-glow-blue {
-        text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+        @apply [text-shadow:0_0_5px_var(--neon-blue),0_0_10px_var(--neon-blue)];
     }
 
     .box-glow {
-        box-shadow: 0 0 10px var(--neon-purple), 0 0 20px rgba(153, 0, 255, 0.5);
+        @apply [box-shadow:0_0_10px_var(--neon-purple),0_0_20px_rgba(153,0,255,0.5)];
     }
 
     .box-glow-pink {
-        box-shadow: 0 0 10px var(--neon-pink), 0 0 20px rgba(255, 0, 255, 0.5);
+        @apply [box-shadow:0_0_10px_var(--neon-pink),0_0_20px_rgba(255,0,255,0.5)];
     }
 
     .box-glow-blue {
-        box-shadow: 0 0 10px var(--neon-blue), 0 0 20px rgba(0, 255, 255, 0.5);
+        @apply [box-shadow:0_0_10px_var(--neon-blue),0_0_20px_rgba(0,255,255,0.5)];
     }
 
     @keyframes gradientShift {
-        0% {
-            background-position: 0% 50%;
-        }
-
-        50% {
-            background-position: 100% 50%;
-        }
-
-        100% {
-            background-position: 0% 50%;
-        }
+        0% { @apply bg-[position:0%_50%]; }
+        50% { @apply bg-[position:100%_50%]; }
+        100% { @apply bg-[position:0%_50%]; }
     }
 
     .gradient-animate {
-        background-size: 200% 200%;
-        animation: gradientShift 15s ease infinite;
+        @apply bg-[length:200%_200%] animate-[gradientShift_15s_ease_infinite];
     }
 
     .scanlines {
-        position: relative;
+        @apply relative;
     }
 
     .scanlines::before {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.05) 51%);
-        background-size: 100% 4px;
-        pointer-events: none;
-        z-index: 100;
+        @apply content-[''] absolute w-full h-full top-0 left-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.05)_51%)] bg-[length:100%_4px] pointer-events-none z-[100];
     }
 
     @keyframes glitch {
-        0% {
-            transform: translate(0);
-        }
-
-        20% {
-            transform: translate(-2px, 2px);
-        }
-
-        40% {
-            transform: translate(-2px, -2px);
-        }
-
-        60% {
-            transform: translate(2px, 2px);
-        }
-
-        80% {
-            transform: translate(2px, -2px);
-        }
-
-        100% {
-            transform: translate(0);
-        }
+        0% { @apply translate-x-0 translate-y-0; }
+        20% { @apply -translate-x-[2px] translate-y-[2px]; }
+        40% { @apply -translate-x-[2px] -translate-y-[2px]; }
+        60% { @apply translate-x-[2px] translate-y-[2px]; }
+        80% { @apply translate-x-[2px] -translate-y-[2px]; }
+        100% { @apply translate-x-0 translate-y-0; }
     }
 
     .glitch {
-        position: relative;
+        @apply relative;
     }
 
     .glitch:hover::before,
     .glitch:hover::after {
-        content: attr(data-text);
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        @apply content-[attr(data-text)] absolute top-0 left-0 w-full h-full;
     }
 
     .glitch:hover::before {
-        left: 2px;
-        text-shadow: -1px 0 var(--neon-pink);
-        clip: rect(44px, 450px, 56px, 0);
-        animation: glitch 0.5s linear infinite alternate-reverse;
+        @apply left-[2px] [text-shadow:-1px_0_var(--neon-pink)] [clip:rect(44px,450px,56px,0)] animate-[glitch_0.5s_linear_infinite_alternate-reverse];
     }
 
     .glitch:hover::after {
-        left: -2px;
-        text-shadow: 1px 0 var(--neon-blue);
-        clip: rect(44px, 450px, 56px, 0);
-        animation: glitch 0.5s linear 0.1s infinite alternate;
+        @apply -left-[2px] [text-shadow:1px_0_var(--neon-blue)] [clip:rect(44px,450px,56px,0)] animate-[glitch_0.5s_linear_0.1s_infinite_alternate];
     }
 
     .neon-button {
-        position: relative;
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        color: var(--neon-pink);
+        @apply relative inline-block py-2 px-4 sm:py-3 sm:px-6 text-[var(--neon-pink)] uppercase tracking-[4px] no-underline text-sm sm:text-base overflow-hidden transition-[0.2s] bg-[rgba(255,0,255,0.1)] rounded-[30px];
+
         font-family: "Orbitron", sans-serif;
-        text-transform: uppercase;
-        letter-spacing: 4px;
-        text-decoration: none;
-        font-size: 1rem;
-        overflow: hidden;
-        transition: 0.2s;
-        background: rgba(255, 0, 255, 0.1);
-        border-radius: 30px;
     }
 
     .neon-button:hover {
-        color: white;
-        background: var(--neon-pink);
-        box-shadow: 0 0 10px var(--neon-pink), 0 0 40px var(--neon-pink), 0 0 80px var(--neon-pink);
-        transition-delay: 0.1s;
+        @apply text-white bg-[var(--neon-pink)] [box-shadow:0_0_10px_var(--neon-pink),0_0_40px_var(--neon-pink),0_0_80px_var(--neon-pink)] [transition-delay:0.1s];
     }
 
     @keyframes float {
-        0% {
-            transform: translateY(0px);
-        }
-
-        50% {
-            transform: translateY(-10px);
-        }
-
-        100% {
-            transform: translateY(0px);
-        }
+        0% { @apply translate-y-0; }
+        50% { @apply -translate-y-[10px]; }
+        100% { @apply translate-y-0; }
     }
 
     .floating {
-        animation: float 6s ease-in-out infinite;
+        @apply animate-[float_6s_ease-in-out_infinite];
     }
 
     @keyframes pulse {
-        0% {
-            transform: scale(1);
-            opacity: 1;
-        }
-
-        50% {
-            transform: scale(1.05);
-            opacity: 0.8;
-        }
-
-        100% {
-            transform: scale(1);
-            opacity: 1;
-        }
+        0% { @apply scale-100 opacity-100; }
+        50% { @apply scale-105 opacity-80; }
+        100% { @apply scale-100 opacity-100; }
     }
 
     .pulse {
-        animation: pulse 4s ease-in-out infinite;
+        @apply animate-[pulse_4s_ease-in-out_infinite];
     }
 
     @keyframes rotate {
-        from {
-            transform: rotate(0deg);
-        }
-
-        to {
-            transform: rotate(360deg);
-        }
+        from { @apply rotate-0; }
+        to { @apply rotate-[360deg]; }
     }
 
     .rotate {
-        animation: rotate 20s linear infinite;
+        @apply animate-[rotate_20s_linear_infinite];
     }
 
     .rotate-reverse {
-        animation: rotate 25s linear infinite reverse;
+        @apply animate-[rotate_25s_linear_infinite_reverse];
     }
 
     ::-webkit-scrollbar {
-        width: 6px;
+        @apply w-[6px];
     }
 
     ::-webkit-scrollbar-track {
-        background: rgb(26, 0, 68);
+        @apply bg-[rgb(26,0,68)];
     }
 
     ::-webkit-scrollbar-thumb {
-        background: linear-gradient(to bottom, var(--neon-purple), var(--neon-pink));
+        @apply bg-[linear-gradient(to_bottom,var(--neon-purple),var(--neon-pink))];
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(to bottom, var(--neon-pink), var(--neon-blue));
+        @apply bg-[linear-gradient(to_bottom,var(--neon-pink),var(--neon-blue))];
     }
 }

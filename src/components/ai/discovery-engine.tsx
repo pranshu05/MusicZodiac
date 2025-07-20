@@ -75,7 +75,7 @@ export function DiscoveryEngine({ chartData }: DiscoveryEngineProps) {
         <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-purple-500/20 box-glow">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-glow-pink">AI Music Discovery</h2>
-                {currentResult?.cached && (<div className="flex items-center gap-2 text-xs text-purple-400 bg-purple-900/30 px-3 py-1 rounded-full"><Database size={12} /><span>Cached discovery</span></div>)}
+                {currentResult?.cached && (<div className="flex items-center gap-2 text-xs text-purple-400 bg-purple-900/30 px-3 py-1 rounded-full w-fit"><Database size={12} /><span>Cached discovery</span></div>)}
             </div>
             <div className="flex gap-2 mb-6 overflow-x-auto">
                 {[
@@ -121,7 +121,7 @@ export function DiscoveryEngine({ chartData }: DiscoveryEngineProps) {
                         </div>
                     )}
                     <div className="text-center pt-4 space-y-2 border-t border-purple-500/20">
-                        <p className="text-xs text-purple-400">✨ Powered by AI • Personalized based on your unique musical chart</p>
+                        <p className="text-xs text-purple-400">✨ Powered by AI • Generated based on your musical chart</p>
                         {currentResult.nextRegenerateTime && (<div className="flex items-center justify-center gap-2 text-xs text-purple-500"><Clock size={12} /><span>Next update available in {formatTimeUntilRegenerate(currentResult.nextRegenerateTime)}</span></div>)}
                     </div>
                 </div>

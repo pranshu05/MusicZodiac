@@ -51,12 +51,12 @@ export function FriendRequests({ requests }: FriendRequestsProps) {
     }
 
     return (
-        <div className="h-full bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-6 border border-purple-500/20 box-glow">
-            <h2 className="text-xl font-bold mb-6 text-glow-pink">Friend Requests</h2>
+        <div className="h-full bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-purple-500/20 box-glow">
+            <h2 className="text-lg sm:text-xl font-bold mb-6 text-glow-pink">Friend Requests</h2>
             {pendingRequests.length > 0 ? (
                 <div className="space-y-4">
                     {pendingRequests.map((request) => (
-                        <div key={request.id} className="flex items-center justify-between p-3 bg-purple-900/30 rounded-lg border border-purple-500/20">
+                        <div key={request.id} className="flex items-center justify-between p-2 sm:p-4 bg-purple-900/30 rounded-lg border border-purple-500/20">
                             <Link href={`/profile/${request.user.username || request.user.id}`} className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full overflow-hidden">
                                     {request.user.image ? (

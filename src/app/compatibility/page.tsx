@@ -9,7 +9,6 @@ import Link from "next/link"
 import { Users, UserPlus, Music } from "lucide-react"
 import { calculateCompatibility } from "@/utils/compatibility"
 import { CompatibilityCard } from "@/components/compatibility/compatibility-card"
-import { CompatibilityGuide } from "@/components/compatibility/compatibility-guide"
 import { InsufficientDataError } from "@/lib/lastfm"
 import type { Metadata } from "next"
 
@@ -113,7 +112,7 @@ export default async function CompatibilityPage() {
         })
         .filter((friend) => friend.musicChart)
 
-    const compatibilityScores = calculateFriendsCompatibility(session.user.id, chartData, friendsWithCharts)
+    const compatibilityScores = calculateFriendsCompatibility( chartData, friendsWithCharts)
 
     return (
         <div className="mx-auto px-4 py-8 space-y-8">
@@ -122,13 +121,10 @@ export default async function CompatibilityPage() {
                     <h1 className="text-3xl font-bold text-white mb-4 text-glow-pink">Musical Compatibility</h1>
                     <p className="text-purple-200">Discover how your music taste aligns with your friends' cosmic charts.</p>
                 </div>
-                <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-6 border border-purple-500/20 box-glow mb-8">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-bold text-glow">Your Friends' Musical Compatibility</h2>
-                        <div className="flex items-center gap-2 text-purple-300">
-                            <Users size={20} />
-                            <span>{friendsWithCharts.length} friends with charts</span>
-                        </div>
+                <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-purple-500/20 box-glow mb-8">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-6">
+                        <h2 className="text-lg sm:text-xl font-bold text-glow">Your Friends' Musical Compatibility</h2>
+                        <div className="text-sm sm:text-base flex items-center gap-2 text-purple-300"><Users size={20} /><span>{friendsWithCharts.length} friends with charts</span></div>
                     </div>
                     {compatibilityScores.length > 0 ? (
                         <div className="space-y-4">
@@ -139,29 +135,25 @@ export default async function CompatibilityPage() {
                     ) : friendsWithCharts.length === 0 ? (
                         <div className="text-center py-12">
                             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center box-glow-pink mb-4 mx-auto"><UserPlus size={32} className="text-white" /></div>
-                            <h3 className="text-xl font-bold text-white mb-2">No Friends with Charts Yet</h3>
+                            <h3 className="text-lg sm:text-xl font-bold text-white mb-2">No Friends with Charts Yet</h3>
                             <p className="text-purple-300 mb-6">Add friends who have generated their music zodiac charts to see compatibility scores.</p>
                             <Link href={ROUTES.FRIENDS} className="neon-button">Find Friends</Link>
                         </div>
                     ) : (
                         <div className="text-center py-8">
                             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-600 to-red-600 flex items-center justify-center box-glow-pink mb-4 mx-auto"><Users size={32} className="text-white" /></div>
-                            <h3 className="text-xl font-bold text-white mb-2">Friends Need to Generate Charts</h3>
+                            <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Friends Need to Generate Charts</h3>
                             <p className="text-purple-300 mb-6">You have {friends.length} friends, but they haven't generated their music zodiac charts yet. Encourage them to connect their Last.fm accounts!</p>
                             <Link href={ROUTES.FRIENDS} className="neon-button">View Friends</Link>
                         </div>
                     )}
-                </div>
-                <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-6 border border-purple-500/20">
-                    <h2 className="text-xl font-bold mb-4 text-glow">Compatibility Guide</h2>
-                    <CompatibilityGuide />
                 </div>
             </div>
         </div>
     )
 }
 
-function calculateFriendsCompatibility(currentUserId: string, userChartData: MusicChartData, friends: any[]) {
+function calculateFriendsCompatibility(userChartData: MusicChartData, friends: any[]) {
     const compatibilityScores = friends
         .map((friend) => {
             const otherChartData = friend.musicChart?.chartData as unknown as MusicChartData

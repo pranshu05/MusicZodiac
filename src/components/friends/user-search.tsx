@@ -58,8 +58,8 @@ export function UserSearch() {
     }
 
     return (
-        <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-6 border border-purple-500/20 box-glow">
-            <h2 className="text-xl font-bold mb-4 text-glow">Find Friends</h2>
+        <div className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-purple-500/20 box-glow">
+            <h2 className="text-lg sm:text-xl font-bold mb-4 text-glow">Find Friends</h2>
             <div className="relative mb-6">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><Search className="h-5 w-5 text-purple-400" /></div>
                 <input type="text" placeholder="Search by username..." value={searchQuery} onChange={handleInputChange} className="w-full pl-10 pr-4 py-3 bg-purple-900/30 border border-purple-500/30 rounded-lg text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all" />

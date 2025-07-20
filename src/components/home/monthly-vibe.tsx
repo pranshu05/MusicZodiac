@@ -95,7 +95,7 @@ export function MonthlyVibe({ chartData }: MonthlyVibeProps) {
                     <div className="space-y-6">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <h2 className="text-xl sm:text-2xl font-bold text-glow-pink">AI-Powered Monthly Forecast</h2>
-                            {aiForecast?.cached && (<div className="flex items-center gap-2 text-xs text-purple-400 bg-purple-900/30 px-3 py-1 rounded-full"><Database size={12} /><span>Cached forecast</span></div>)}
+                            {aiForecast?.cached && (<div className="flex items-center gap-2 text-xs text-purple-400 bg-purple-900/30 px-3 py-1 rounded-full w-fit"><Database size={12} /><span>Cached forecast</span></div>)}
                         </div>
                         {isLoading && (
                             <div className="text-center py-8 sm:py-12">
@@ -110,7 +110,7 @@ export function MonthlyVibe({ chartData }: MonthlyVibeProps) {
                         )}
                         {!isLoading && (
                             <div className="space-y-4 sm:space-y-6">
-                                <div className="bg-gradient-to-r from-purple-800/30 to-fuchsia-800/30 rounded-xl p-4 border border-purple-500/20">
+                                <div className="bg-gradient-to-r from-purple-800/30 to-fuchsia-800/30 rounded-xl p-2 sm:p-4 border border-purple-500/20">
                                     <div className="flex items-center mb-3">
                                         <Sparkles size={16} className="text-pink-300 mr-2 flex-shrink-0" />
                                         <h4 className="font-bold text-pink-200 text-sm sm:text-base">Cosmic Musical Interpretation</h4>
@@ -121,8 +121,8 @@ export function MonthlyVibe({ chartData }: MonthlyVibeProps) {
                                     <h3 className="text-lg sm:text-xl font-bold text-glow">AI-Curated Recommendations</h3>
                                     <div className="space-y-3">
                                         {displayForecast.recommendations.map((rec, index) => (
-                                            <div key={index} className="flex items-start gap-3 p-3 bg-purple-900/20 rounded-xl border border-purple-500/10">
-                                                <span className="w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-xs font-bold">{index + 1}</span>
+                                            <div key={index} className="flex items-start gap-3 p-3 bg-gradient-to-r from-purple-800/30 to-fuchsia-800/30 rounded-xl border border-purple-500/10">
+                                                <span className="hidden w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex-shrink-0 sm:flex items-center justify-center text-xs font-bold">{index + 1}</span>
                                                 <span className="text-purple-100 text-sm leading-relaxed">{rec}</span>
                                             </div>
                                         ))}
@@ -134,7 +134,7 @@ export function MonthlyVibe({ chartData }: MonthlyVibeProps) {
                                 </div>
                                 {aiForecast && (
                                     <div className="text-center space-y-2 pt-2">
-                                        <p className="text-xs text-purple-400">✨ Powered by AI • Generated based on your unique musical chart</p>
+                                        <p className="text-xs text-purple-400">✨ Powered by AI • Generated based on your musical chart</p>
                                         {aiForecast.nextRegenerateTime && (<div className="flex items-center justify-center gap-2 text-xs text-purple-500"><Clock size={12} /><span>Next update available in {formatTimeUntilRegenerate(aiForecast.nextRegenerateTime)}</span></div>)}
                                     </div>
                                 )}
@@ -145,7 +145,7 @@ export function MonthlyVibe({ chartData }: MonthlyVibeProps) {
                     <div className="space-y-6">
                         <h2 className="text-xl sm:text-2xl font-bold text-glow-pink">Friends Musical Compatibility</h2>
                         <p className="text-purple-200 text-sm sm:text-base leading-relaxed">Discover how your music chart aligns with your friends' cosmic musical identities!</p>
-                        <div className="flex justify-center py-4"><Link href="/compatibility" className="neon-button">Check Friends Compatibility</Link></div>
+                        <div className="flex justify-center"><Link href="/compatibility" className="neon-button">Check Compatibility</Link></div>
                         <div className="bg-gradient-to-r from-purple-800/30 to-fuchsia-800/30 rounded-xl p-4 border border-purple-500/20">
                             <div className="flex items-center mb-2"><Users size={16} className="text-blue-300 mr-2 flex-shrink-0" /><h4 className="font-bold text-blue-200 text-sm sm:text-base">Compatibility Insights</h4></div>
                             <p className="text-purple-200 text-sm leading-relaxed">Your {chartData.sun.sign} Sun harmonizes well with {chartData.venus?.sign || "Pop"} and{" "} {chartData.jupiter?.sign || "World"} listeners, while your {chartData.moon?.sign || "Alternative"} Moon creates deep connections with emotionally-driven music lovers.</p>

@@ -101,7 +101,7 @@ export function ChartDetails({ chartData, username, selectedPosition, onPosition
                                         <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-0 space-y-4">
                                             <div className="h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"></div>
                                             <Tabs defaultValue="about" className="w-full">
-                                                <TabsList className="bg-purple-900/40 border border-purple-500/20 w-full sm:w-auto">
+                                                <TabsList className="bg-purple-900/40 border border-purple-500/20 w-auto">
                                                     <TabsTrigger value="about" className="text-xs sm:text-sm">About</TabsTrigger>
                                                     <TabsTrigger value="artists" className="text-xs sm:text-sm">Artists</TabsTrigger>
                                                 </TabsList>
